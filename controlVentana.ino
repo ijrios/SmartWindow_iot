@@ -8,12 +8,16 @@ int switchPin2 = 2; // Fin de carrera ventana abierta
 int switchPin3 = 3; // Fin de carrera ventana cerrada
 int pinLDR = 0; // Pin analogico de entrada para el LDR
 int valorLDR = 0; // Variable donde se almacena el valor del LDR
+int ledpin = 12; // Led puerta abierta
+int ledpin2 = 13; // Led puerta cerrada
 
 
 void setup()
 {
   pinMode(in1Pin, OUTPUT);
   pinMode(in2Pin, OUTPUT);
+  pinMode(ledpin, OUTPUT);
+  pinMode(ledpin2, OUTPUT);
   pinMode(enablePin, OUTPUT);
   pinMode(switchPin, INPUT_PULLUP);
   pinMode(switchPin2, INPUT_PULLUP);
@@ -39,9 +43,11 @@ void loop()
  //-------------------------------------------------------------------------------------
    // Caso 2 - Sensor LDR con poca luz
  if(valorLDR > 256)
-  {reverse = !reverse; // solo cambiará cuando el estado del botón sea BAJO
+  {
+  reverse = !reverse; // solo cambiará cuando el estado del botón sea BAJO
   lastState = digitalRead(switchPin);
   setMotor(speed, reverse);
+  digitalWrite(ledpin,HIGH);
   }
   //-------------------------------------------------------------------------------------
    // Caso 3 - Sensor LDR con mucha luz
@@ -50,9 +56,12 @@ void loop()
   reverse = !reverse; // solo cambiará cuando el estado del botón sea BAJO
   lastState = digitalRead(switchPin);
   setMotor(speed, reverse);
+  digitalWrite(ledpin2,HIGH);
   } 
   //-------------------------------------------------------------------------------------
    // Caso 4 - sensor de lluvia
+   
+  //-------------------------------------------------------------------------------------
 
 }
 
@@ -64,7 +73,10 @@ void setMotor(int speed, boolean reverse)
   digitalWrite(in2Pin, reverse);
 }
 
+//Metodo para apagar motor, manjeado como interrupcion para ignorar el estado del puerto
 void blink() {
-  analogWrite(enablePin, 0);
+  analogWrite(enablePin, 0); // Se apaga el motor al llegar al fin de carrera
   reverse = !reverse; // solo cambiará cuando el estado del botón sea LOW
+  digitalWrite(ledpin,LOW);
+  digitalWrite(ledpin,LOW);
 }
