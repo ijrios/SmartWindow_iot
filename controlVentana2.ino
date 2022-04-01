@@ -1,29 +1,27 @@
-int leftPins[] = {11,10,9}; //one pin for PWm, two pins for motor direction
-
-int leftSensorPin = 0;  //analog pin for sensors
-
-int sensorThreshold = 0;  //must have this much light on a sensor to move
-int looks = 0;  //the number of attempts to turn and find light
+int Pins[] = {11,10,9}; //Un pin para PWM, dos pines para la dirección del motor
+int SensorPin = 0;  //Pin analógico para sensores
+int sensorUmbral = 0;  //Debe tener tanta luz en un sensor para moverse
+int looks = 0;  //El número de intentos de girar y encontrar la luz
 
 void setup()
 {
   for(int i=1; i < 3; i++)
   {
-    pinMode(leftPins[i], OUTPUT);
+    pinMode(Pins[i], OUTPUT);
   }  
   Serial.begin(9600); //Inicializamos monitor serie para visualizar los valores de LDR. 
 }
 
 void loop()
 {
-    int leftVal = analogRead(leftSensorPin);
-    Serial.println(leftVal); //Imprimimos dicho valor, comprendido entre 0 y 1023. 
-    if(sensorThreshold == 0)
-      sensorThreshold = (leftVal)/2;
+    int Val = analogRead(SensorPin);
+    Serial.println(Val); //Imprimimos dicho valor, comprendido entre 0 y 1023. 
+    if(sensorUmbral == 0)
+      sensorUmbral = (Val)/2;
 
-    if(leftVal < sensorThreshold)
+    if(leftVal < sensorUmbral)
     {
-      if(looks < 4) //limit the number of consecutive looks
+      if(looks < 4) //Limitar el número de miradas consecutivas
       {
         lookAround();
         looks = looks + 1;  
@@ -31,16 +29,16 @@ void loop()
     }
     else 
     {
-      //if there is adequate ligth to move ahead
-      setSpeed(leftPins, map(leftVal,0,1023,0,255));
+      //Si hay suficiente luz para avanzar
+      setSpeed(Pins, map(Val,0,1023,0,255));
       looks = 0;  
     }
     
 }
 void lookAround()
 {
-  //rotate left or half a second
-  setSpeed(leftPins, -127);
+  //Girar a la izquierda o medio segundo
+  setSpeed(Pins, -127);
   
 }
 
