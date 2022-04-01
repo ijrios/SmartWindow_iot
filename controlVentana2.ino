@@ -3,6 +3,8 @@ int SensorPin = 0;  //Pin analógico para sensores
 int sensorUmbral = 0;  //Debe tener tanta luz en un sensor para moverse
 int looks = 0;  //El número de intentos de girar y encontrar la luz
 int switchPin = 7; // Boton de apagado
+int switchPin2 = 2; // Fin de carrera ventana abierta
+int switchPin3 = 3; // Fin de carrera ventana cerrada
 boolean reversa = false;
 boolean estadoant = false;
 
@@ -14,6 +16,10 @@ void setup()
   }  
   Serial.begin(9600); //Inicializamos monitor serie para visualizar los valores de LDR. 
   pinMode(switchPin, INPUT_PULLUP);
+  pinMode(switchPin2, INPUT_PULLUP);
+  pinMode(switchPin3, INPUT_PULLUP);
+  attachInterrupt(digitalPinToInterrupt(switchPin2), blink, FALLING);
+  attachInterrupt(digitalPinToInterrupt(switchPin3), blink, FALLING);
 }
 
 void loop()
@@ -65,4 +71,11 @@ void setSpeed(int pins[], int speed)
     digitalWrite(pins[2], HIGH);  
   }
   analogWrite(pins[0], speed);
+}
+
+//Metodo para apagar motor, manjeado como interrupcion para ignorar el estado del puerto
+void blink() {
+  analogWrite(Pins[0], 0); // Se apaga el motor al llegar al fin de carrera
+  digitalWrite(ledpin,LOW);
+  digitalWrite(ledpin,LOW);
 }

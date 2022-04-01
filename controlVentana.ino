@@ -36,26 +36,14 @@ void loop()
   Serial.println(valorLDR);      //Imprimimos dicho valor, comprendido entre 0 y 1023. 
   delay(500);
  //-------------------------------------------------------------------------------------
-   // Caso 1 - Botón
+ // Caso 1 - Botón
   if(digitalRead(switchPin) == LOW && digitalRead(switchPin) != lastState) // mirando para ver si el estado del botón es LOW y no es igual al último estado.
 { 
   reverse = !reverse; // solo cambiará cuando el estado del botón sea BAJO
   lastState = digitalRead(switchPin);
   setMotor(speed, reverse);
 }
-  //-------------------------------------------------------------------------------------
-   // Caso 2 - Sensor LDR con poca luz
-  if(valorLDR > 10)
-  {
-  //reverse = !reverse; // solo cambiará cuando el estado del botón sea BAJO
-  //lastState = digitalRead(switchPin);
-  //setMotor(speed, reverse);
-  //digitalWrite(ledpin,HIGH);
-  }
-
- //-------------------------------------------------------------------------------------
-  
-  // Caso 3 - Sensor LDR con mucha luz
+  // Caso 2 - Sensor LDR con mucha luz
   if(valorLDR < 256 )
   {
   reverse = !reverse; // solo cambiará cuando el estado del botón sea BAJO
@@ -64,10 +52,6 @@ void loop()
   digitalWrite(ledpin2,HIGH);
   } 
 
-  //-------------------------------------------------------------------------------------
-   // Caso 4 - sensor de lluvia
-   
-  //-------------------------------------------------------------------------------------
 }
 
  //---------------------------------------------------------------------------------------
