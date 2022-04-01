@@ -2,6 +2,9 @@ int Pins[] = {11,10,9}; //Un pin para PWM, dos pines para la dirección del moto
 int SensorPin = 0;  //Pin analógico para sensores
 int sensorUmbral = 0;  //Debe tener tanta luz en un sensor para moverse
 int looks = 0;  //El número de intentos de girar y encontrar la luz
+int switchPin = 7; // Boton de apagado
+boolean reversa = false;
+boolean estadoant = false;
 
 void setup()
 {
@@ -10,6 +13,7 @@ void setup()
     pinMode(Pins[i], OUTPUT);
   }  
   Serial.begin(9600); //Inicializamos monitor serie para visualizar los valores de LDR. 
+  pinMode(switchPin, INPUT_PULLUP);
 }
 
 void loop()
@@ -19,7 +23,7 @@ void loop()
     if(sensorUmbral == 0)
       sensorUmbral = (Val)/2;
 
-    if(leftVal < sensorUmbral)
+    if(Val < sensorUmbral)
     {
       if(looks < 4) //Limitar el número de miradas consecutivas
       {
@@ -33,11 +37,18 @@ void loop()
       setSpeed(Pins, map(Val,0,1023,0,255));
       looks = 0;  
     }
-    
+
+   if(digitalRead(switchPin) == LOW && digitalRead(switchPin) != estadoant) // mirando para ver si el estado del botón es LOW y no es igual al último estado.
+    { 
+       reversa = !reversa; // solo cambiará cuando el estado del botón sea BAJO
+       estadoant = digitalRead(switchPin);
+       setMotor(speed, reverse);
+    }
+      
 }
 void lookAround()
 {
-  //Girar a la izquierda o medio segundo
+  //Girar a la izquierda 
   setSpeed(Pins, -127);
   
 }
