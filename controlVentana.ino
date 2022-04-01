@@ -34,6 +34,7 @@ void loop()
   int speed = 255; // Velocidad
   valorLDR= analogRead(pinLDR); // Guardamos el valor leido del ADC en una variable
   Serial.println(valorLDR);      //Imprimimos dicho valor, comprendido entre 0 y 1023. 
+  delay(1000);
  //-------------------------------------------------------------------------------------
    // Caso 1 - Botón
   if(digitalRead(switchPin) == LOW && digitalRead(switchPin) != lastState) // mirando para ver si el estado del botón es LOW y no es igual al último estado.
@@ -46,10 +47,8 @@ void loop()
    // Caso 2 - Sensor LDR con poca luz
   if(valorLDR > 256)
   {
-  //reverse = !reverse; // solo cambiará cuando el estado del botón sea BAJO
-  //lastState = digitalRead(switchPin);
-  //setMotor(speed, reverse);
-  //digitalWrite(ledpin,HIGH);
+  reverse = !reverse; // solo cambiará cuando el estado del botón sea BAJO
+  
   }
 
  //-------------------------------------------------------------------------------------
@@ -59,12 +58,12 @@ void loop()
    // MIERDA CONVIERTETE EN INTERRUCIÓN PLEASE
   if(valorLDR < 256 )
   {
-  reverse = !reverse; // solo cambiará cuando el estado del botón sea BAJO
-  lastState = digitalRead(switchPin);
+  
+  
+  } 
+lastState = digitalRead(switchPin);
   setMotor(speed, reverse);
   digitalWrite(ledpin2,HIGH);
-  } 
-
   //-------------------------------------------------------------------------------------
    // Caso 4 - sensor de lluvia
    
@@ -77,6 +76,8 @@ void setMotor(int speed, boolean reverse)
   analogWrite(enablePin, speed);
   digitalWrite(in1Pin, ! reverse);
   digitalWrite(in2Pin, reverse);
+  digitalWrite(in2Pin, ! reverse);
+  digitalWrite(in1Pin, reverse);
 }
 
 //Metodo para apagar motor, manjeado como interrupcion para ignorar el estado del puerto
