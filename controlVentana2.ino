@@ -7,6 +7,9 @@ int switchPin2 = 2; // Fin de carrera ventana abierta
 int switchPin3 = 3; // Fin de carrera ventana cerrada
 boolean reversa = false;
 boolean estadoant = false;
+int ledpin = 12; // Led puerta abierta
+int ledpin2 = 13; // Led puerta cerrada
+
 
 void setup()
 {
@@ -18,6 +21,8 @@ void setup()
   pinMode(switchPin, INPUT_PULLUP);
   pinMode(switchPin2, INPUT_PULLUP);
   pinMode(switchPin3, INPUT_PULLUP);
+  pinMode(ledpin, OUTPUT);
+  pinMode(ledpin2, OUTPUT);
   attachInterrupt(digitalPinToInterrupt(switchPin2), blink, FALLING);
   attachInterrupt(digitalPinToInterrupt(switchPin3), blink, FALLING);
 }
@@ -34,19 +39,25 @@ void loop()
       if(looks < 4) //Limitar el número de miradas consecutivas
       {
         lookAround();
-        looks = looks + 1;  
+        looks = looks + 1;
+        digitalWrite(ledpin,HIGH); 
+        digitalWrite(ledpin2,LOW);   
       }  
     }
     else 
     {
       //Si hay suficiente luz para avanzar
       setSpeed(Pins, map(Val,0,1023,0,255));
-      looks = 0;  
+      looks = 0; 
+      digitalWrite(ledpin2,HIGH);
+      digitalWrite(ledpin1,LOW);   
     }
 
    if(digitalRead(switchPin) == LOW && digitalRead(switchPin) != estadoant) // mirando para ver si el estado del botón es LOW y no es igual al último estado.
     { 
        analogWrite(Pins[0], 0);
+       digitalWrite(ledpin,LOW);
+       digitalWrite(ledpin,LOW);
     }
       
 }
