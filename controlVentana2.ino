@@ -40,9 +40,7 @@ void loop()
 
    if(digitalRead(switchPin) == LOW && digitalRead(switchPin) != estadoant) // mirando para ver si el estado del botón es LOW y no es igual al último estado.
     { 
-       reversa = !reversa; // solo cambiará cuando el estado del botón sea BAJO
-       estadoant = digitalRead(switchPin);
-       setMotor(speed, reverse);
+       analogWrite(Pins[0], 0);
     }
       
 }
