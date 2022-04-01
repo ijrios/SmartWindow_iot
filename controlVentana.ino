@@ -41,7 +41,9 @@ void loop()
   reverse = !reverse; // solo cambiará cuando el estado del botón sea BAJO
   lastState = digitalRead(switchPin);
   setMotor(speed, reverse);
-
+}
+  //-------------------------------------------------------------------------------------
+   // Caso 2 - Sensor LDR con poca luz
   if(valorLDR > 256)
   {
   //reverse = !reverse; // solo cambiará cuando el estado del botón sea BAJO
@@ -49,8 +51,10 @@ void loop()
   //setMotor(speed, reverse);
   //digitalWrite(ledpin,HIGH);
   }
-  //-------------------------------------------------------------------------------------
-   // Caso 3 - Sensor LDR con mucha luz
+
+ //-------------------------------------------------------------------------------------
+  
+  // Caso 3 - Sensor LDR con mucha luz
    // FUCKKKK FUNCIONAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
    // MIERDA CONVIERTETE EN INTERRUCIÓN PLEASE
   if(valorLDR < 256 )
@@ -61,12 +65,6 @@ void loop()
   digitalWrite(ledpin2,HIGH);
   } 
 
-}
- //-------------------------------------------------------------------------------------
-   // Caso 2 - Sensor LDR con poca luz
- 
-
-  
   //-------------------------------------------------------------------------------------
    // Caso 4 - sensor de lluvia
    
