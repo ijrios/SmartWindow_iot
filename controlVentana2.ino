@@ -1,6 +1,6 @@
 int Pins[] = {11,10,9}; //Un pin para PWM, dos pines para la dirección del motor
-int switchPin[] = {2,3} // Fin de carreraFin de carrera
-int leds[] = {12,13} // Leds puerta abierta y cerada
+int switchPin[] = {2,3}; // Fin de carreraFin de carrera
+int leds[] = {12,13}; // Leds puerta abierta y cerada
 int SensorPin = 0;  //Pin analógico para sensores
 int sensorUmbral = 0;  //Debe tener tanta luz en un sensor para moverse
 int apagar = 7; // Boton de apagado
@@ -14,19 +14,19 @@ void setup()
   {
     pinMode(Pins[i], OUTPUT);
   } 
-   for(int j=1; j < 2; i++)
+   for(int j=1; j < 2; j++)
   {
     pinMode(switchPin[j], INPUT_PULLUP);
   }
 
-  for(int h=1; h < 2; i++)
+  for(int h=1; h < 2; h++)
   {
     pinMode(leds[h], OUTPUT);
   }
   Serial.begin(9600); //Inicializamos monitor serie para visualizar los valores de LDR. 
   pinMode(apagar, INPUT_PULLUP); //Se asigna boton de apagado como entrada
-  attachInterrupt(digitalPinToInterrupt(switchPin2), blink, CHANGE); //Se convierte los fines de carrera en interruptor
-  attachInterrupt(digitalPinToInterrupt(switchPin3), blink, FALLING); //Se convierte los fines de carrera en interruptor
+  attachInterrupt(digitalPinToInterrupt(switchPin[0]), blink, FALLING); //Se convierte los fines de carrera en interruptor
+  attachInterrupt(digitalPinToInterrupt(switchPin[1]), blink, FALLING); //Se convierte los fines de carrera en interruptor
 }
 
 void loop()
@@ -37,7 +37,9 @@ void loop()
     if(sensorUmbral == 0)
       sensorUmbral = (Val)/2;
 
-    if(Val < sensorUmbral)
+   if(digitalRead(apagar) == HIGH){
+     
+     if(Val < sensorUmbral)
     {
         lookAround();
         digitalWrite(leds[1],HIGH); 
@@ -49,27 +51,28 @@ void loop()
         lookAround2();
         digitalWrite(leds[1],HIGH); 
         digitalWrite(leds[2],LOW);   
-    }
-    
-    
- if(digitalRead(apagar) == LOW && digitalRead(apagar) != estadoant) // mirando para ver si el estado del botón es LOW y no es igual al último estado.
+    }     
+     
+  }
+
+ if(digitalRead(apagar) == LOW) // mirando para ver si el estado del botón es LOW y no es igual al último estado.
     { 
        setSpeed(Pins, 0);
-       digitalWrite(ledpin,LOW);
-       digitalWrite(ledpin,LOW);
+       digitalWrite(leds[1],LOW);
+       digitalWrite(leds[2],LOW);
     }
    
 }
 void lookAround()
 {
   //Girar a la izquierda 
-  setSpeed(Pins, -127);
+  setSpeed(Pins, -255);
   
 }
 void lookAround2()
 {
   //Girar a la derecha
-  setSpeed(Pins, 127);
+  setSpeed(Pins, 255);
   
 }
 

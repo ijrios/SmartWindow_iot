@@ -6,10 +6,11 @@ int in2Pin = 9; // Control del motor
 int switchPin = 7; // Boton de encendido 
 int switchPin2 = 2; // Fin de carrera ventana abierta
 int switchPin3 = 3; // Fin de carrera ventana cerrada
-int pinLDR = A0; // Pin analogico de entrada para el LDR
+int pinLDR = 0; // Pin analogico de entrada para el LDR
 int valorLDR = 0; // Variable donde se almacena el valor del LDR
 int ledpin = 12; // Led puerta abierta
 int ledpin2 = 13; // Led puerta cerrada
+int sensorUmbral = 0;  //Debe tener tanta luz en un sensor para moverse
 
 
 void setup()
@@ -34,7 +35,6 @@ void loop()
   int speed = 255; // Velocidad
   valorLDR= analogRead(pinLDR); // Guardamos el valor leido del ADC en una variable
   Serial.println(valorLDR);      //Imprimimos dicho valor, comprendido entre 0 y 1023. 
-  delay(500);
  //-------------------------------------------------------------------------------------
  // Caso 1 - Botón
   if(digitalRead(switchPin) == LOW && digitalRead(switchPin) != lastState) // mirando para ver si el estado del botón es LOW y no es igual al último estado.
@@ -43,14 +43,24 @@ void loop()
   lastState = digitalRead(switchPin);
   setMotor(speed, reverse);
 }
+
+     if(sensorUmbral == 0)
+      sensorUmbral = (valorLDR)/2;
+
   // Caso 2 - Sensor LDR con mucha luz
-  if(valorLDR < 256 )
+  if(valorLDR < sensorUmbral)
   {
   reverse = !reverse; // solo cambiará cuando el estado del botón sea BAJO
+  } 
+  
+  if(valorLDR > sensorUmbral )
+  {
+  reverse = !reverse; // solo cambiará cuando el estado del botón sea BAJO
+  } 
+  
+  
   lastState = digitalRead(switchPin);
   setMotor(speed, reverse);
-  digitalWrite(ledpin2,HIGH);
-  } 
 
 }
 
