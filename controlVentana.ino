@@ -1,83 +1,103 @@
-boolean reverse = false;
-boolean lastState = false;
-int enablePin = 11; // PWM 
-int in1Pin = 10; // Control del motor
-int in2Pin = 9; // Control del motor
-int switchPin = 7; // Boton de encendido 
-int switchPin2 = 2; // Fin de carrera ventana abierta
-int switchPin3 = 3; // Fin de carrera ventana cerrada
-int pinLDR = 0; // Pin analogico de entrada para el LDR
-int valorLDR = 0; // Variable donde se almacena el valor del LDR
-int ledpin = 12; // Led puerta abierta
-int ledpin2 = 13; // Led puerta cerrada
+int Pins[] = {11,10,9}; //Un pin para PWM, dos pines para la dirección del motor
+int switchPin[] = {2,3}; // Fin de carreraFin de carrera
+int leds[] = {12,13}; // Leds puerta abierta y cerada
+int SensorPin = 0;  //Pin analógico para sensores
 int sensorUmbral = 0;  //Debe tener tanta luz en un sensor para moverse
+int apagar = 7; // Boton de apagado
+boolean reversa = false;
+boolean estadoant = false;
 
 
 void setup()
 {
-  pinMode(in1Pin, OUTPUT);
-  pinMode(in2Pin, OUTPUT);
-  pinMode(ledpin, OUTPUT);
-  pinMode(ledpin2, OUTPUT);
-  pinMode(enablePin, OUTPUT);
-  pinMode(switchPin, INPUT_PULLUP);
-  pinMode(switchPin2, INPUT_PULLUP);
-  pinMode(switchPin3, INPUT_PULLUP);
-  attachInterrupt(digitalPinToInterrupt(switchPin2), blink, FALLING);
-  attachInterrupt(digitalPinToInterrupt(switchPin3), blink, FALLING);
+  for(int i=1; i < 3; i++)
+  {
+    pinMode(Pins[i], OUTPUT);
+  } 
+   for(int j=1; j < 2; j++)
+  {
+    pinMode(switchPin[j], INPUT_PULLUP);
+  }
+
+  for(int h=1; h < 2; h++)
+  {
+    pinMode(leds[h], OUTPUT);
+  }
   Serial.begin(9600); //Inicializamos monitor serie para visualizar los valores de LDR. 
-  
+  pinMode(apagar, INPUT_PULLUP); //Se asigna boton de apagado como entrada
+  attachInterrupt(digitalPinToInterrupt(switchPin[0]), blink, CHANGE); //Se convierte los fines de carrera en interruptor
+  attachInterrupt(digitalPinToInterrupt(switchPin[1]), blink, CHANGE); //Se convierte los fines de carrera en interruptor
 }
 
 void loop()
 {
-  int estado =0;
-  int speed = 255; // Velocidad
-  valorLDR= analogRead(pinLDR); // Guardamos el valor leido del ADC en una variable
-  Serial.println(valorLDR);      //Imprimimos dicho valor, comprendido entre 0 y 1023. 
- //-------------------------------------------------------------------------------------
- // Caso 1 - Botón
-  if(digitalRead(switchPin) == LOW && digitalRead(switchPin) != lastState) // mirando para ver si el estado del botón es LOW y no es igual al último estado.
-{ 
-  reverse = !reverse; // solo cambiará cuando el estado del botón sea BAJO
-  lastState = digitalRead(switchPin);
-  setMotor(speed, reverse);
+    int Val = analogRead(SensorPin);
+    Serial.println(Val); //Imprimimos dicho valor, comprendido entre 0 y 1023. 
+
+    if(sensorUmbral == 0)
+      sensorUmbral = (Val)/2;
+
+   if(digitalRead(apagar) == HIGH){
+     
+     if(Val < 200)
+    {
+        lookAround2();
+        digitalWrite(leds[1],HIGH); 
+        digitalWrite(leds[2],LOW);   
+    }
+
+     if(Val > 200)
+    {
+        lookAround();
+        digitalWrite(leds[1],HIGH); 
+        digitalWrite(leds[2],LOW);   
+    }     
+     
+  }
+
+ if(digitalRead(apagar) == LOW) // mirando para ver si el estado del botón es LOW y no es igual al último estado.
+    { 
+       setSpeed(Pins, 0);
+       digitalWrite(leds[1],LOW);
+       digitalWrite(leds[2],LOW);
+    }
+   
 }
-
-     if(sensorUmbral == 0)
-      sensorUmbral = (valorLDR)/2;
-
-  // Caso 2 - Sensor LDR con mucha luz
-  if(valorLDR < sensorUmbral)
-  {
-  reverse = !reverse; // solo cambiará cuando el estado del botón sea BAJO
-  } 
-  
-  if(valorLDR > sensorUmbral )
-  {
-  reverse = !reverse; // solo cambiará cuando el estado del botón sea BAJO
-  } 
-  
-  
-  lastState = digitalRead(switchPin);
-  setMotor(speed, reverse);
-
-}
-
- //---------------------------------------------------------------------------------------
-void setMotor(int speed, boolean reverse)
+void lookAround()
 {
-  analogWrite(enablePin, speed);
-  digitalWrite(in1Pin, ! reverse);
-  digitalWrite(in2Pin, reverse);
-  digitalWrite(in2Pin, ! reverse);
-  digitalWrite(in1Pin, reverse);
+  //Girar a la izquierda 
+  setSpeed(Pins, -255);
+  
+}
+void lookAround2()
+{
+  //Girar a la derecha
+  setSpeed(Pins, 255);
+  
+}
+
+void setSpeed(int pins[], int speed)
+{
+  if(speed < 0)
+  {
+    digitalWrite(pins[1], HIGH);
+    digitalWrite(pins[2], LOW);
+    speed = -speed;  
+    
+  }  
+  else
+  {
+    digitalWrite(pins[1], LOW);
+    digitalWrite(pins[2], HIGH);  
+  }
+  analogWrite(pins[0], speed);
 }
 
 //Metodo para apagar motor, manjeado como interrupcion para ignorar el estado del puerto
 void blink() {
-  analogWrite(enablePin, 0); // Se apaga el motor al llegar al fin de carrera
-  reverse = !reverse; // solo cambiará cuando el estado del botón sea LOW
-  digitalWrite(ledpin,LOW);
-  digitalWrite(ledpin,LOW);
+   // Se apaga el motor al llegar al fin de carrera
+   setSpeed(Pins, 0);
+  digitalWrite(leds[1],LOW);
+  digitalWrite(leds[2],LOW);
+  
 }
