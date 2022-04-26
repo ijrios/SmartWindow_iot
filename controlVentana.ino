@@ -1,9 +1,9 @@
 int Pins[] = {11,10,9}; //Un pin para PWM, dos pines para la dirección del motor
-int switchPin[] = {2,3}; // Fin de carreraFin de carrera
+int switchPin = 6; // Fin de carreraFin de carrera
+int switchPin2 = 7; // Fin de carreraFin de carrera
 int leds[] = {12,13}; // Leds puerta abierta y cerada
 int SensorPin = 0;  //Pin analógico para sensores
 int sensorUmbral = 0;  //Debe tener tanta luz en un sensor para moverse
-int apagar = 7; // Boton de apagado
 boolean reversa = false;
 boolean estadoant = false;
 
@@ -12,21 +12,15 @@ void setup()
 {
   for(int i=1; i < 3; i++)
   {
-    pinMode(Pins[i], OUTPUT);
+    pinMode(Pins[i], OUTPUT); //Se asignan los controladores del motor como entrada
   } 
-   for(int j=1; j < 2; j++)
-  {
-    pinMode(switchPin[j], INPUT_PULLUP);
-  }
-
   for(int h=1; h < 2; h++)
   {
-    pinMode(leds[h], OUTPUT);
+    pinMode(leds[h], OUTPUT); //Se asignan leds como entrada
   }
   Serial.begin(9600); //Inicializamos monitor serie para visualizar los valores de LDR. 
-  pinMode(apagar, INPUT_PULLUP); //Se asigna boton de apagado como entrada
-  attachInterrupt(digitalPinToInterrupt(switchPin[0]), blink, CHANGE); //Se convierte los fines de carrera en interruptor
-  attachInterrupt(digitalPinToInterrupt(switchPin[1]), blink, CHANGE); //Se convierte los fines de carrera en interruptor
+  pinMode(switchPin, INPUT_PULLUP); //Se asigna boton de fin de carrera como entrada
+  pinMode(switchPin2, INPUT_PULLUP); //Se asigna boton de fin de carrera como entrada
 }
 
 void loop()
@@ -34,35 +28,41 @@ void loop()
     int Val = analogRead(SensorPin);
     Serial.println(Val); //Imprimimos dicho valor, comprendido entre 0 y 1023. 
 
-    if(sensorUmbral == 0)
-      sensorUmbral = (Val)/2;
-
-   if(digitalRead(apagar) == HIGH){
-     
-     if(Val < 200)
-    {
-        lookAround2();
-        digitalWrite(leds[1],HIGH); 
-        digitalWrite(leds[2],LOW);   
-    }
-
-     if(Val > 200)
+     //Cuando hay poca luz, ventana cierra
+     if(Val > 400)
     {
         lookAround();
         digitalWrite(leds[1],HIGH); 
         digitalWrite(leds[2],LOW);   
-    }     
-     
-  }
-
- if(digitalRead(apagar) == LOW) // mirando para ver si el estado del botón es LOW y no es igual al último estado.
-    { 
-       setSpeed(Pins, 0);
-       digitalWrite(leds[1],LOW);
-       digitalWrite(leds[2],LOW);
     }
-   
+
+     //Cuando hay mucha luz, ventana abre
+     if(Val < 400)
+    {
+        lookAround2();
+        digitalWrite(leds[1],HIGH); 
+        digitalWrite(leds[2],LOW);   
+    }      
+  
+   //Cuando llega al final de carrera apaga, y enciende solo cuando hay luz
+   if(digitalRead(switchPin) == LOW && Val < 400) 
+   {
+      apagado();
+    }
+
+   //Cuando llega al final de carrera apaga, y enciende solo cuando no hay luz
+   if(digitalRead(switchPin2) == LOW && Val > 400) 
+    { 
+      apagado();
+    }  
 }
+
+void apagado()
+{
+  //Metodo que apaga el motor
+  setSpeed(Pins, 0);
+}
+
 void lookAround()
 {
   //Girar a la izquierda 
@@ -78,6 +78,7 @@ void lookAround2()
 
 void setSpeed(int pins[], int speed)
 {
+  //Metodo para cambiar direccion del motor e innicializar su paso
   if(speed < 0)
   {
     digitalWrite(pins[1], HIGH);
@@ -96,8 +97,6 @@ void setSpeed(int pins[], int speed)
 //Metodo para apagar motor, manjeado como interrupcion para ignorar el estado del puerto
 void blink() {
    // Se apaga el motor al llegar al fin de carrera
-   setSpeed(Pins, 0);
-  digitalWrite(leds[1],LOW);
-  digitalWrite(leds[2],LOW);
+  apagado();
   
 }
