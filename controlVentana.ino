@@ -4,8 +4,9 @@ int switchPin2 = 7; // Fin de carreraFin de carrera
 int leds[] = {12,13}; // Leds puerta abierta y cerada
 int SensorPin_luz = 0;  //Pin analógico para sensor de luz
 int SensorPin_temp = 1;  //Pin analógico para sensor de temperatura
-int SensorPin_lluvia = 2;  //Pin analógico para sensor de lluvia
+int SensorPin_lluvia = 5;  //Pin analógico para sensor de lluvia - se utiliza como boton para pruebas
 int apagar = 2; // Apagado manual de la ventana
+int automatico = 0; // Cambiar el estado de automatico manual 
 boolean reversa = false;
 boolean estadoant = false;
 
@@ -14,52 +15,84 @@ void setup()
 {
   for(int i=1; i < 3; i++)
   {
-    pinMode(Pins[i], OUTPUT); //Se asignan los controladores del motor como entrada
+    pinMode(Pins[i], OUTPUT); //Se asignan los controladores del motor como salida
   } 
   for(int h=1; h < 2; h++)
   {
-    pinMode(leds[h], OUTPUT); //Se asignan leds como entrada
+    pinMode(leds[h], OUTPUT); //Se asignan leds como salida
   }
   Serial.begin(9600); //Inicializamos monitor serie para visualizar los valores de LDR. 
   pinMode(switchPin, INPUT_PULLUP); //Se asigna boton de fin de carrera como entrada
   pinMode(switchPin2, INPUT_PULLUP); //Se asigna boton de fin de carrera como entrada
   pinMode(apagar, INPUT_PULLUP); //Se asigna boton manueal como entrada
+  pinMode(SensorPin_lluvia, INPUT_PULLUP); //Se asigna boton manueal como entrada
   attachInterrupt(digitalPinToInterrupt(apagar), blink, LOW); //Se convierte en boton manual en interruptor
 }
 
 void loop()
 {
-    int Val = analogRead(SensorPin_luz);
-    int Val2 = analogRead(SensorPin_temp);
-    int Val3 = analogRead(SensorPin_lluvia);
-    Serial.println(Val); //Imprimimos dicho valor, comprendido entre 0 y 1023. 
+    int Val_luz = analogRead(SensorPin_luz);
+    int Val_temp = analogRead(SensorPin_temp);
+    //int Val_lluvia = analogRead(SensorPin_lluvia);
+    //Convertimos valor del sensor a temperatura en grados
+    Val_temp = (5.0 * Val_temp * 100.0)/1024.0; 
+    Serial.print("Sensor de luz: ");
+    Serial.println(Val_luz); //Imprimimos dicho valor, comprendido entre 0 y 1023. 
+    Serial.print("Sensor de Temperatura en grados: ");
+    Serial.println(Val_temp); //Imprimimos dicho valor, comprendido entre 0 y 1023. 
 
-     //Cuando hay poca luz, ventana cierra
-     if(Val > 400)
+
+     //Cuando hay lluvia la ventana cierra en cualquier estado
+     if(digitalRead(SensorPin_lluvia) == LOW){
+        lookAround2();
+        digitalWrite(leds[1],HIGH); 
+        digitalWrite(leds[2],HIGH);
+     }
+     
+     //Cuando hay poca luz y temperatura baja, ventana cierra
+     if(Val_luz > 400 && Val_temp < 28)
     {
         lookAround2();
         digitalWrite(leds[1],HIGH); 
         digitalWrite(leds[2],LOW);   
     }
 
-     //Cuando hay mucha luz, ventana abre
-     if(Val < 400)
+    //Cuando hay poca luz y temperatura alta, ventana abre
+     if(Val_luz > 400 && Val_temp > 28)
+    {
+        lookAround();
+        digitalWrite(leds[1],HIGH); 
+        digitalWrite(leds[2],LOW);   
+    }
+
+    
+       //Cuando hay mucha luz y temperatura alta, ventana abre
+     if(Val_luz < 400 && Val_temp > 28)
     {
         lookAround();
         digitalWrite(leds[1],LOW); 
+        digitalWrite(leds[2],HIGH);  
+
+    }  
+
+     //Cuando hay mucha luz y temperatura baja, ventana cierra
+     if(Val_luz < 400 && Val_temp < 28)
+    {
+        lookAround2();
+        digitalWrite(leds[1],LOW); 
         digitalWrite(leds[2],HIGH);   
-    }      
-  
-   //Cuando llega al final de carrera apaga, y enciende solo cuando hay luz
-   if(digitalRead(switchPin) == LOW && Val > 400) 
+    }  
+
+   //Cuando llega al final de carrera apaga, y enciende solo cuando no hay luz 
+   if(digitalRead(switchPin) == LOW && Val_luz > 400) 
    {
       apagado();
       digitalWrite(leds[1],LOW); 
       digitalWrite(leds[2],LOW);  
     }
 
-   //Cuando llega al final de carrera apaga, y enciende solo cuando no hay luz
-   if(digitalRead(switchPin2) == LOW && Val < 400) 
+   //Cuando llega al final de carrera apaga, y enciende solo cuando hay luz
+   if(digitalRead(switchPin2) == LOW && Val_luz < 400) 
     { 
       apagado();
       digitalWrite(leds[1],LOW); 
