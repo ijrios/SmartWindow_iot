@@ -2,8 +2,9 @@ int Pins[] = {11,10,9}; //Un pin para PWM, dos pines para la dirección del moto
 int switchPin = 6; // Fin de carreraFin de carrera
 int switchPin2 = 7; // Fin de carreraFin de carrera
 int leds[] = {12,13}; // Leds puerta abierta y cerada
-int SensorPin = 0;  //Pin analógico para sensores
-int sensorUmbral = 0;  //Debe tener tanta luz en un sensor para moverse
+int SensorPin_luz = 0;  //Pin analógico para sensor de luz
+int SensorPin_temp = 1;  //Pin analógico para sensor de temperatura
+int SensorPin_lluvia = 2;  //Pin analógico para sensor de lluvia
 int apagar = 2; // Apagado manual de la ventana
 boolean reversa = false;
 boolean estadoant = false;
@@ -28,7 +29,9 @@ void setup()
 
 void loop()
 {
-    int Val = analogRead(SensorPin);
+    int Val = analogRead(SensorPin_luz);
+    int Val2 = analogRead(SensorPin_temp);
+    int Val3 = analogRead(SensorPin_lluvia);
     Serial.println(Val); //Imprimimos dicho valor, comprendido entre 0 y 1023. 
 
      //Cuando hay poca luz, ventana cierra
