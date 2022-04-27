@@ -4,6 +4,7 @@ int switchPin2 = 7; // Fin de carreraFin de carrera
 int leds[] = {12,13}; // Leds puerta abierta y cerada
 int SensorPin = 0;  //Pin analógico para sensores
 int sensorUmbral = 0;  //Debe tener tanta luz en un sensor para moverse
+int apagar = 2; // Apagado manual de la ventana
 boolean reversa = false;
 boolean estadoant = false;
 
@@ -21,6 +22,8 @@ void setup()
   Serial.begin(9600); //Inicializamos monitor serie para visualizar los valores de LDR. 
   pinMode(switchPin, INPUT_PULLUP); //Se asigna boton de fin de carrera como entrada
   pinMode(switchPin2, INPUT_PULLUP); //Se asigna boton de fin de carrera como entrada
+  pinMode(apagar, INPUT_PULLUP); //Se asigna boton manueal como entrada
+  attachInterrupt(digitalPinToInterrupt(apagar), blink, LOW); //Se convierte en boton manual en interruptor
 }
 
 void loop()
@@ -48,12 +51,16 @@ void loop()
    if(digitalRead(switchPin) == LOW && Val < 400) 
    {
       apagado();
+      digitalWrite(pins[1], LOW);
+      digitalWrite(pins[2], LOW); 
     }
 
    //Cuando llega al final de carrera apaga, y enciende solo cuando no hay luz
    if(digitalRead(switchPin2) == LOW && Val > 400) 
     { 
       apagado();
+      digitalWrite(pins[1], LOW);
+      digitalWrite(pins[2], LOW); 
     }  
 }
 
@@ -96,7 +103,8 @@ void setSpeed(int pins[], int speed)
 
 //Metodo para apagar motor, manjeado como interrupcion para ignorar el estado del puerto
 void blink() {
-   // Se apaga el motor al llegar al fin de carrera
+   //Se apaga el motor cuando la persona presione el boton manual
   apagado();
-  
+  digitalWrite(pins[1], LOW);
+  digitalWrite(pins[2], LOW);  
 }
