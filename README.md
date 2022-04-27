@@ -15,3 +15,15 @@
 ## DESCRIPCIÓN TECNOLÓGICA
 • Por medio de la información que tomen los sensores, los motores harán mover los engranajes haciendo que la ventana se abra o se cierre dependiendo la situación climática.
 Los sensores van a emitir una señal al microcontrolador programado para que este haga que los motores cierren o abran la ventana, todo este sistema alimentado energéticamente por un panel solar.
+
+## ESTADOS
+
+• Caso Base: La ventana se cierra cuando está lloviendo o boton manual en estado 1
+
+• Caso 1: La ventana se abre con mucha luz (dia)
+
+• Caso 2: La ventana se abre con mucha luz (dia) y temperatura alta
+
+• Caso 3: La ventana se cierra con poca luz (noche) y temperatura baja
+
+• Caso 4: La ventana se abre con poca luz (noche) y temperatura alta
