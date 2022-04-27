@@ -34,7 +34,7 @@ void loop()
      //Cuando hay poca luz, ventana cierra
      if(Val > 400)
     {
-        lookAround();
+        lookAround2();
         digitalWrite(leds[1],HIGH); 
         digitalWrite(leds[2],LOW);   
     }
@@ -42,25 +42,25 @@ void loop()
      //Cuando hay mucha luz, ventana abre
      if(Val < 400)
     {
-        lookAround2();
-        digitalWrite(leds[1],HIGH); 
-        digitalWrite(leds[2],LOW);   
+        lookAround();
+        digitalWrite(leds[1],LOW); 
+        digitalWrite(leds[2],HIGH);   
     }      
   
    //Cuando llega al final de carrera apaga, y enciende solo cuando hay luz
-   if(digitalRead(switchPin) == LOW && Val < 400) 
+   if(digitalRead(switchPin) == LOW && Val > 400) 
    {
       apagado();
-      digitalWrite(pins[1], LOW);
-      digitalWrite(pins[2], LOW); 
+      digitalWrite(leds[1],LOW); 
+      digitalWrite(leds[2],LOW);  
     }
 
    //Cuando llega al final de carrera apaga, y enciende solo cuando no hay luz
-   if(digitalRead(switchPin2) == LOW && Val > 400) 
+   if(digitalRead(switchPin2) == LOW && Val < 400) 
     { 
       apagado();
-      digitalWrite(pins[1], LOW);
-      digitalWrite(pins[2], LOW); 
+      digitalWrite(leds[1],LOW); 
+      digitalWrite(leds[2],LOW); 
     }  
 }
 
@@ -105,6 +105,6 @@ void setSpeed(int pins[], int speed)
 void blink() {
    //Se apaga el motor cuando la persona presione el boton manual
   apagado();
-  digitalWrite(pins[1], LOW);
-  digitalWrite(pins[2], LOW);  
+  digitalWrite(leds[1],HIGH); 
+  digitalWrite(leds[2],HIGH);  
 }
