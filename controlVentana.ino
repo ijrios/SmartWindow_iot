@@ -8,8 +8,6 @@ int SensorPin_lluvia = 5;  //Pin analógico para sensor de lluvia - se utiliza c
 int abrir_cerrar = 4; // Abrir y cerrar ventana manualmente
 int apagar = 2; // Apagado manual de la ventana
 int automatico = 3; // Cambiar el estado de automatico manual 
-boolean reversa = false;
-boolean estadoant = false;
 
 
 void setup()
@@ -25,9 +23,10 @@ void setup()
   Serial.begin(9600); //Inicializamos monitor serie para visualizar los valores de LDR. 
   pinMode(switchPin, INPUT_PULLUP); //Se asigna boton de fin de carrera como entrada
   pinMode(switchPin2, INPUT_PULLUP); //Se asigna boton de fin de carrera como entrada
-  pinMode(abrir_cerrar, INPUT_PULLUP); //Se asigna boton manueal como entrada
-  pinMode(SensorPin_lluvia, INPUT_PULLUP); //Se asigna boton manueal como entrada
+  pinMode(abrir_cerrar, INPUT_PULLUP); //Se asigna boton manual como entrada
+  pinMode(SensorPin_lluvia, INPUT_PULLUP); //Se asigna boton de prueba como entrada
   pinMode(automatico, INPUT_PULLUP); //Se asigna boton manueal como entrada
+  pinMode(apagar, INPUT_PULLUP); //Se asigna boton manueal como entrada
   attachInterrupt(digitalPinToInterrupt(apagar), blink, LOW); //Se convierte en boton manual en interruptor
 }
 
