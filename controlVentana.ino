@@ -6,7 +6,7 @@ int SensorPin_luz = 0;  //Pin analógico para sensor de luz
 int SensorPin_temp = 1;  //Pin analógico para sensor de temperatura
 int SensorPin_lluvia = 5;  //Pin analógico para sensor de lluvia - se utiliza como boton para pruebas
 int apagar = 2; // Apagado manual de la ventana
-int automatico = 0; // Cambiar el estado de automatico manual 
+int automatico = 3; // Cambiar el estado de automatico manual 
 boolean reversa = false;
 boolean estadoant = false;
 
@@ -42,23 +42,27 @@ void loop()
     Serial.println(Val_temp); //Imprimimos dicho valor, comprendido entre 0 y 1023. 
 
 
-     //Cuando hay lluvia la ventana cierra en cualquier estado
-     if(digitalRead(SensorPin_lluvia) == LOW){
-        lookAround2();
-        digitalWrite(leds[1],HIGH); 
-        digitalWrite(leds[2],HIGH);
-     }
+     // ----------------------   MODO AUTOMATICO ----------------------------
      
-     //Cuando hay poca luz y temperatura baja, ventana cierra
-     if(Val_luz > 400 && Val_temp < 28)
+     //Cuando hay poca luz y temperatura baja, está lloviendo ventana cierra
+     if(Val_luz > 400 && Val_temp < 28 && digitalRead(SensorPin_lluvia) == LOW)
     {
         lookAround2();
         digitalWrite(leds[1],HIGH); 
         digitalWrite(leds[2],LOW);   
     }
 
+     //Cuando hay poca luz y temperatura baja, ventana cierra
+     if(Val_luz > 400 && Val_temp < 28 && digitalRead(SensorPin_lluvia) == HIGH)
+    {
+        lookAround2();
+        digitalWrite(leds[1],HIGH); 
+        digitalWrite(leds[2],LOW);   
+    }
+
+
     //Cuando hay poca luz y temperatura alta, ventana abre
-     if(Val_luz > 400 && Val_temp > 28)
+     if(Val_luz > 400 && Val_temp > 28 && digitalRead(SensorPin_lluvia) == HIGH)
     {
         lookAround();
         digitalWrite(leds[1],HIGH); 
@@ -67,7 +71,7 @@ void loop()
 
     
        //Cuando hay mucha luz y temperatura alta, ventana abre
-     if(Val_luz < 400 && Val_temp > 28)
+     if(Val_luz < 400 && Val_temp > 28 && digitalRead(SensorPin_lluvia) == HIGH)
     {
         lookAround();
         digitalWrite(leds[1],LOW); 
@@ -75,8 +79,34 @@ void loop()
 
     }  
 
+     //Cuando hay poca luz y temperatura alta, está lloviendo ventana cierra
+     if(Val_luz > 400 && Val_temp > 28 && digitalRead(SensorPin_lluvia) == LOW)
+    {
+        lookAround2();
+        digitalWrite(leds[1],HIGH); 
+        digitalWrite(leds[2],LOW);   
+    }
+
+    
+       //Cuando hay mucha luz y temperatura alta, está lloviendo ventana cierra
+     if(Val_luz < 400 && Val_temp > 28 && digitalRead(SensorPin_lluvia) == LOW)
+    {
+        lookAround2();
+        digitalWrite(leds[1],LOW); 
+        digitalWrite(leds[2],HIGH);  
+
+    }  
+
      //Cuando hay mucha luz y temperatura baja, ventana cierra
-     if(Val_luz < 400 && Val_temp < 28)
+     if(Val_luz < 400 && Val_temp < 28 && digitalRead(SensorPin_lluvia) == LOW)
+    {
+        lookAround2();
+        digitalWrite(leds[1],LOW); 
+        digitalWrite(leds[2],HIGH);   
+    }  
+
+    //Cuando hay mucha luz y temperatura baja, ventana cierra
+     if(Val_luz < 400 && Val_temp < 28 && digitalRead(SensorPin_lluvia) == HIGH)
     {
         lookAround2();
         digitalWrite(leds[1],LOW); 
@@ -98,6 +128,10 @@ void loop()
       digitalWrite(leds[1],LOW); 
       digitalWrite(leds[2],LOW); 
     }  
+
+    // ---------- MODO MANUAL ------------------
+      
+   
 }
 
 void apagado()
