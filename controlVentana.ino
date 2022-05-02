@@ -5,6 +5,7 @@ int leds[] = {12,13}; // Leds puerta abierta y cerada
 int SensorPin_luz = 0;  //Pin analógico para sensor de luz
 int SensorPin_temp = 1;  //Pin analógico para sensor de temperatura
 int SensorPin_lluvia = 5;  //Pin analógico para sensor de lluvia - se utiliza como boton para pruebas
+int abrir_cerrar = 4; // Abrir y cerrar ventana manualmente
 int apagar = 2; // Apagado manual de la ventana
 int automatico = 3; // Cambiar el estado de automatico manual 
 boolean reversa = false;
@@ -24,9 +25,10 @@ void setup()
   Serial.begin(9600); //Inicializamos monitor serie para visualizar los valores de LDR. 
   pinMode(switchPin, INPUT_PULLUP); //Se asigna boton de fin de carrera como entrada
   pinMode(switchPin2, INPUT_PULLUP); //Se asigna boton de fin de carrera como entrada
-  pinMode(apagar, INPUT_PULLUP); //Se asigna boton manueal como entrada
+  pinMode(abrir_cerrar, INPUT_PULLUP); //Se asigna boton manueal como entrada
   pinMode(SensorPin_lluvia, INPUT_PULLUP); //Se asigna boton manueal como entrada
   pinMode(automatico, INPUT_PULLUP); //Se asigna boton manueal como entrada
+  attachInterrupt(digitalPinToInterrupt(apagar), blink, LOW); //Se convierte en boton manual en interruptor
 }
 
 void loop()
@@ -39,7 +41,7 @@ void loop()
     Serial.print("Sensor de luz: ");
     Serial.println(Val_luz); //Imprimimos dicho valor, comprendido entre 0 y 1023. 
     Serial.print("Sensor de Temperatura en grados: ");
-    Serial.println(Val_temp); //Imprimimos dicho valor, comprendido entre 0 y 1023. 
+    Serial.println(Val_temp); //Imprimimos dicho valor, comprendido entre 0 y 100.
 
 
      // ---------------------------   MODO AUTOMATICO ----------------------------
@@ -131,7 +133,8 @@ void loop()
 
     // ----------------------- MODO MANUAL ------------------
 
-     if(digitalRead(apagar) == LOW && digitalRead(automatico) == LOW)
+     //Boton manual ventana cierra
+     if(digitalRead(abrir_cerrar) == LOW && digitalRead(automatico) == LOW)
     {
         lookAround2();
         digitalWrite(leds[1],LOW); 
@@ -140,7 +143,7 @@ void loop()
     }  
 
        //Boton manual ventana abre
-     if(digitalRead(apagar) == HIGH && digitalRead(automatico) == LOW)
+     if(digitalRead(abrir_cerrar) == HIGH && digitalRead(automatico) == LOW)
     {
         lookAround();
         digitalWrite(leds[1],LOW); 
@@ -150,7 +153,7 @@ void loop()
 
       
      //Cuando llega al final de carrera apaga, y enciende solo cuando no hay luz 
-   if(digitalRead(switchPin) == LOW && digitalRead(apagar) == LOW && digitalRead(automatico) == LOW) 
+   if(digitalRead(switchPin) == LOW && digitalRead(abrir_cerrar) == LOW && digitalRead(automatico) == LOW) 
    {
       apagado();
       digitalWrite(leds[1],LOW); 
@@ -158,7 +161,7 @@ void loop()
     }
 
    //Cuando llega al final de carrera apaga, y enciende solo cuando hay luz
-   if(digitalRead(switchPin2) == LOW && digitalRead(apagar) == HIGH && digitalRead(automatico) == LOW) 
+   if(digitalRead(switchPin2) == LOW && digitalRead(abrir_cerrar) == HIGH && digitalRead(automatico) == LOW) 
     { 
       apagado();
       digitalWrite(leds[1],LOW); 
