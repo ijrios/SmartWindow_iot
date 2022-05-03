@@ -4,10 +4,10 @@ int switchPin2 = 7; // Fin de carreraFin de carrera
 int leds[] = {12,13}; // Leds puerta abierta y cerada
 int SensorPin_luz = 0;  //Pin analógico para sensor de luz
 int SensorPin_temp = 1;  //Pin analógico para sensor de temperatura
-int SensorPin_lluvia = 5;  //Pin analógico para sensor de lluvia - se utiliza como boton para pruebas
+int SensorPin_lluvia = 3;  //Pin analógico para sensor de lluvia 
 int abrir_cerrar = 4; // Abrir y cerrar ventana manualmente
 int apagar = 2; // Apagado manual de la ventana
-int automatico = 3; // Cambiar el estado de automatico manual 
+int automatico = 5; // Cambiar el estado de automatico manual 
 
 
 void setup()
@@ -23,30 +23,30 @@ void setup()
   Serial.begin(9600); //Inicializamos monitor serie para visualizar los valores de LDR. 
   pinMode(switchPin, INPUT_PULLUP); //Se asigna boton de fin de carrera como entrada
   pinMode(switchPin2, INPUT_PULLUP); //Se asigna boton de fin de carrera como entrada
-  pinMode(abrir_cerrar, INPUT_PULLUP); //Se asigna boton manual como entrada
-  pinMode(SensorPin_lluvia, INPUT_PULLUP); //Se asigna boton de prueba como entrada
-  pinMode(automatico, INPUT_PULLUP); //Se asigna boton manueal como entrada
-  pinMode(apagar, INPUT_PULLUP); //Se asigna boton manueal como entrada
-  attachInterrupt(digitalPinToInterrupt(apagar), blink, LOW); //Se convierte en boton manual en interruptor
+  pinMode(abrir_cerrar, INPUT_PULLUP); //Se asigna boton manual para abrir y cerrar como entrada
+  pinMode(automatico, INPUT_PULLUP); //Se asigna boton manueal de automatico como entrada
+  pinMode(apagar, INPUT_PULLUP); //Se asigna boton manueal para apagar en cualquier estado como entrada
+  attachInterrupt(digitalPinToInterrupt(apagar), blink, LOW); //Se convierte el boton manual en interruptor para apagarla en cualquier estado
 }
 
 void loop()
 {
-    int Val_luz = analogRead(SensorPin_luz);
-    int Val_temp = analogRead(SensorPin_temp);
-    //int Val_lluvia = analogRead(SensorPin_lluvia);
-    //Convertimos valor del sensor a temperatura en grados
-    Val_temp = (5.0 * Val_temp * 100.0)/1024.0; 
-    Serial.print("Sensor de luz: ");
+    int Val_luz = analogRead(SensorPin_luz); //Se lee el valor del sensor de luz
+    int Val_temp = analogRead(SensorPin_temp); //Se lee el valor del sensor de temperatura
+    int Val_lluvia = analogRead(SensorPin_lluvia); //Se lee el valor del sensor de lluvia
+    Val_temp = (5.0 * Val_temp * 100.0)/1024.0; //Convertimos valor del sensor a temperatura en grados
+    Serial.print("Sensor de luz: "); 
     Serial.println(Val_luz); //Imprimimos dicho valor, comprendido entre 0 y 1023. 
     Serial.print("Sensor de Temperatura en grados: ");
     Serial.println(Val_temp); //Imprimimos dicho valor, comprendido entre 0 y 100.
+    Serial.print("Sensor de Lluvia en grados: ");
+    Serial.println(Val_lluvia); //Imprimimos dicho valor, comprendido entre 0 y 1023.
 
 
      // ---------------------------   MODO AUTOMATICO ----------------------------
      
      //Cuando hay poca luz y temperatura baja, está lloviendo ventana cierra
-     if(Val_luz > 400 && Val_temp < 28 && digitalRead(SensorPin_lluvia) == LOW && digitalRead(automatico)  == HIGH)
+     if(Val_luz > 400 && Val_temp < 22 && valor <= 780 && digitalRead(automatico)  == HIGH)
     {
         lookAround2();
         digitalWrite(leds[1],HIGH); 
@@ -54,7 +54,7 @@ void loop()
     }
 
      //Cuando hay poca luz y temperatura baja, ventana cierra
-     if(Val_luz > 400 && Val_temp < 28 && digitalRead(SensorPin_lluvia) == HIGH && digitalRead(automatico)  == HIGH)
+     if(Val_luz > 400 && Val_temp < 22 && valor > 780 && digitalRead(automatico)  == HIGH)
     {
         lookAround2();
         digitalWrite(leds[1],HIGH); 
@@ -63,7 +63,7 @@ void loop()
 
 
     //Cuando hay poca luz y temperatura alta, ventana abre
-     if(Val_luz > 400 && Val_temp > 28 && digitalRead(SensorPin_lluvia) == HIGH && digitalRead(automatico)  == HIGH)
+     if(Val_luz > 400 && Val_temp > 22 && valor > 780  && digitalRead(automatico)  == HIGH)
     {
         lookAround();
         digitalWrite(leds[1],HIGH); 
@@ -72,7 +72,7 @@ void loop()
 
     
        //Cuando hay mucha luz y temperatura alta, ventana abre
-     if(Val_luz < 400 && Val_temp > 28 && digitalRead(SensorPin_lluvia) == HIGH && digitalRead(automatico)  == HIGH)
+     if(Val_luz < 400 && Val_temp > 22 && valor > 780  && digitalRead(automatico)  == HIGH)
     {
         lookAround();
         digitalWrite(leds[1],LOW); 
@@ -81,7 +81,7 @@ void loop()
     }  
 
      //Cuando hay poca luz y temperatura alta, está lloviendo ventana cierra
-     if(Val_luz > 400 && Val_temp > 28 && digitalRead(SensorPin_lluvia) == LOW && digitalRead(automatico)  == HIGH)
+     if(Val_luz > 400 && Val_temp > 22 && valor <= 780 && digitalRead(automatico)  == HIGH)
     {
         lookAround2();
         digitalWrite(leds[1],HIGH); 
@@ -90,7 +90,7 @@ void loop()
 
     
        //Cuando hay mucha luz y temperatura alta, está lloviendo ventana cierra
-     if(Val_luz < 400 && Val_temp > 28 && digitalRead(SensorPin_lluvia) == LOW && digitalRead(automatico)  == HIGH)
+     if(Val_luz < 400 && Val_temp > 22 && valor <= 780 && digitalRead(automatico)  == HIGH)
     {
         lookAround2();
         digitalWrite(leds[1],LOW); 
@@ -98,8 +98,8 @@ void loop()
 
     }  
 
-     //Cuando hay mucha luz y temperatura baja, ventana cierra
-     if(Val_luz < 400 && Val_temp < 28 && digitalRead(SensorPin_lluvia) == LOW && digitalRead(automatico)  == HIGH)
+     //Cuando hay mucha luz y temperatura baja, está lloviendo ventana cierra
+     if(Val_luz < 400 && Val_temp < 28 && valor <= 780  && digitalRead(automatico)  == HIGH)
     {
         lookAround2();
         digitalWrite(leds[1],LOW); 
@@ -107,7 +107,7 @@ void loop()
     }  
 
     //Cuando hay mucha luz y temperatura baja, ventana cierra
-     if(Val_luz < 400 && Val_temp < 28 && digitalRead(SensorPin_lluvia) == HIGH && digitalRead(automatico)  == HIGH)
+     if(Val_luz < 400 && Val_temp < 22 && valor > 780  && digitalRead(automatico)  == HIGH)
     {
         lookAround2();
         digitalWrite(leds[1],LOW); 
