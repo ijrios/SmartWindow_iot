@@ -39,7 +39,7 @@ void loop()
     Serial.println(Val_luz); //Imprimimos dicho valor, comprendido entre 0 y 1023. 
     Serial.print("Sensor de Temperatura en grados: ");
     Serial.println(Val_temp); //Imprimimos dicho valor, comprendido entre 0 y 100.
-    Serial.print("Sensor de Lluvia en grados: ");
+    Serial.print("Sensor de Lluvia: ");
     Serial.println(Val_lluvia); //Imprimimos dicho valor, comprendido entre 0 y 1023.
 
 
@@ -114,21 +114,21 @@ void loop()
         digitalWrite(leds[2],HIGH);   
     }  
 
-   //Cuando llega al final de carrera apaga, y enciende solo cuando no hay luz 
-   if(digitalRead(switchPin) == LOW && Val_luz > 400 && digitalRead(automatico)  == HIGH) 
-   {
-      apagado();
-      digitalWrite(leds[1],LOW); 
-      digitalWrite(leds[2],LOW);  
-    }
+    //Cuando llega al final de carrera apaga, y enciende solo cuando no hay luz 
+    if(digitalRead(switchPin) == LOW && Val_luz > 400 && digitalRead(automatico)  == HIGH) 
+    {
+       apagado();
+       digitalWrite(leds[1],LOW); 
+       digitalWrite(leds[2],LOW);  
+     }
 
-   //Cuando llega al final de carrera apaga, y enciende solo cuando hay luz
-   if(digitalRead(switchPin2) == LOW && Val_luz < 400 && digitalRead(automatico)  == HIGH) 
-    { 
-      apagado();
-      digitalWrite(leds[1],LOW); 
-      digitalWrite(leds[2],LOW); 
-    }  
+    //Cuando llega al final de carrera apaga, y enciende solo cuando hay luz
+    if(digitalRead(switchPin2) == LOW && Val_luz < 400 && digitalRead(automatico)  == HIGH) 
+     { 
+       apagado();
+       digitalWrite(leds[1],LOW); 
+       digitalWrite(leds[2],LOW); 
+     }  
 
     // ----------------------- MODO MANUAL ------------------
 
@@ -206,9 +206,8 @@ void setSpeed(int pins[], int speed)
   analogWrite(pins[0], speed);
 }
 
-//Metodo para apagar motor, manjeado como interrupcion para ignorar el estado del puerto
+//Metodo para apagar motor, manejado como interrupcion para ignorar el estado del puerto
 void blink() {
-   //Se apaga el motor cuando la persona presione el boton manual
   apagado();
   digitalWrite(leds[1],HIGH); 
   digitalWrite(leds[2],HIGH);  
