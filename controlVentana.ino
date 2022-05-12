@@ -2,9 +2,9 @@ int Pins[] = {11,10,9}; //Un pin para PWM, dos pines para la dirección del moto
 int switchPin = 6; // Fin de carreraFin de carrera
 int switchPin2 = 7; // Fin de carreraFin de carrera
 int leds[] = {12,13}; // Leds puerta abierta y cerada
-int SensorPin_luz = 0;  //Pin analógico para sensor de luz
-int SensorPin_temp = 1;  //Pin analógico para sensor de temperatura
-int SensorPin_lluvia = 2;  //Pin analógico para sensor de lluvia 
+int SensorPin_luz = A0;  //Pin analógico para sensor de luz
+int SensorPin_temp = A1;  //Pin analógico para sensor de temperatura
+int SensorPin_lluvia = A2;  //Pin analógico para sensor de lluvia 
 int abrir_cerrar = 4; // Abrir y cerrar ventana manualmente
 int apagar = 2; // Apagado manual de la ventana
 int automatico = 5; // Cambiar el estado de automatico manual 
@@ -41,7 +41,7 @@ void loop()
     Serial.println(Val_temp); //Imprimimos dicho valor, comprendido entre 0 y 100.
     Serial.print("Sensor de Lluvia: ");
     Serial.println(Val_lluvia); //Imprimimos dicho valor, comprendido entre 0 y 1023.
-
+    delay(500);
 
      // ---------------------------   MODO AUTOMATICO ----------------------------
      
@@ -121,14 +121,14 @@ void loop()
       digitalWrite(leds[0],LOW); 
       digitalWrite(leds[1],LOW);  
     }
-    
-    //Cuando llega al final de carrera apaga, y enciende solo cuando hay luz 
-   if(digitalRead(switchPin) == LOW && Val_luz < 400 && digitalRead(automatico)  == HIGH) 
+
+     //Cuando llega al final de carrera apaga, y enciende solo cuando no hay luz 
+   if(digitalRead(switchPin) == LOW && Val_lluvia < 780 && digitalRead(automatico)  == HIGH) 
    {
       apagado();
       digitalWrite(leds[0],LOW); 
       digitalWrite(leds[1],LOW);  
-    } 
+    }
 
      //Cuando llega al final de carrera apaga, y enciende solo cuando hay luz
    if(digitalRead(switchPin2) == LOW && Val_luz < 400 && digitalRead(automatico)  == HIGH && Val_lluvia > 780) 
@@ -145,7 +145,7 @@ void loop()
     {
         lookAround2();
         digitalWrite(leds[1],LOW); 
-        digitalWrite(leds[2],HIGH);  
+        digitalWrite(leds[0],HIGH);  
 
     }  
 
@@ -174,7 +174,6 @@ void loop()
       digitalWrite(leds[0],LOW); 
       digitalWrite(leds[1],LOW); 
     }  
-   
 }
 
 void apagado()
@@ -214,7 +213,7 @@ void setSpeed(int pins[], int speed)
   analogWrite(pins[0], speed);
 }
 
-//Metodo para apagar motor, manejado como interrupcion para ignorar el estado del puerto
+//Metodo para apagar motor, manejado como interruptor para ignorar el estado del puerto
 void blink() {
   apagado();
   digitalWrite(leds[1],HIGH); 
