@@ -210,5 +210,5 @@ void setSpeed(int pins[], int speed)
 void blink() {
   apagado();
   digitalWrite(leds[1],HIGH); 
-  digitalWrite(leds[2],HIGH);  
+  digitalWrite(leds[0],HIGH);  
 }
