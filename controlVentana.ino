@@ -4,7 +4,7 @@ int switchPin2 = 7; // Fin de carreraFin de carrera
 int leds[] = {12,13}; // Leds puerta abierta y cerada
 int SensorPin_luz = 0;  //Pin analógico para sensor de luz
 int SensorPin_temp = 1;  //Pin analógico para sensor de temperatura
-int SensorPin_lluvia = 3;  //Pin analógico para sensor de lluvia 
+int SensorPin_lluvia = 2;  //Pin analógico para sensor de lluvia 
 int abrir_cerrar = 4; // Abrir y cerrar ventana manualmente
 int apagar = 2; // Apagado manual de la ventana
 int automatico = 5; // Cambiar el estado de automatico manual 
@@ -114,21 +114,29 @@ void loop()
         digitalWrite(leds[0],HIGH);   
     }  
 
-    //Cuando llega al final de carrera apaga, y enciende solo cuando no hay luz 
-    if(digitalRead(switchPin) == LOW && Val_luz > 400 && digitalRead(automatico)  == HIGH) 
-    {
-       apagado();
-       digitalWrite(leds[0],LOW); 
-       digitalWrite(leds[1],LOW);  
-     }
+      //Cuando llega al final de carrera apaga, y enciende solo cuando no hay luz 
+   if(digitalRead(switchPin) == LOW && Val_luz > 400 && digitalRead(automatico)  == HIGH) 
+   {
+      apagado();
+      digitalWrite(leds[0],LOW); 
+      digitalWrite(leds[1],LOW);  
+    }
+    
+    //Cuando llega al final de carrera apaga, y enciende solo cuando hay luz 
+   if(digitalRead(switchPin) == LOW && Val_luz < 400 && digitalRead(automatico)  == HIGH) 
+   {
+      apagado();
+      digitalWrite(leds[0],LOW); 
+      digitalWrite(leds[1],LOW);  
+    } 
 
-    //Cuando llega al final de carrera apaga, y enciende solo cuando hay luz
-    if(digitalRead(switchPin2) == LOW && Val_luz < 400 && digitalRead(automatico)  == HIGH) 
-     { 
-       apagado();
-       digitalWrite(leds[0],LOW); 
-       digitalWrite(leds[1],LOW); 
-     }  
+     //Cuando llega al final de carrera apaga, y enciende solo cuando hay luz
+   if(digitalRead(switchPin2) == LOW && Val_luz < 400 && digitalRead(automatico)  == HIGH && Val_lluvia > 780) 
+    { 
+      apagado();
+      digitalWrite(leds[0],LOW); 
+      digitalWrite(leds[1],LOW); 
+    } 
 
     // ----------------------- MODO MANUAL ------------------
 
