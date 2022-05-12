@@ -57,8 +57,8 @@ void loop()
      if(Val_luz > 400 && Val_temp < 22 && Val_lluvia > 780 && digitalRead(automatico)  == HIGH)
     {
         lookAround2();
-        digitalWrite(leds[0],HIGH); 
-        digitalWrite(leds[1],LOW);   
+        digitalWrite(leds[1],HIGH); 
+        digitalWrite(leds[0],LOW);   
     }
 
 
@@ -72,11 +72,11 @@ void loop()
 
     
        //Cuando hay mucha luz y temperatura alta, ventana abre
-     if(Val_luz < 400 && Val_temp > 22 && Val_lluvia > 780  && digitalRead(automatico)  == HIGH)
+     if(Val_luz <= 400 && Val_temp > 22 && Val_lluvia > 780  && digitalRead(automatico)  == HIGH)
     {
         lookAround();
-        digitalWrite(leds[1],LOW); 
-        digitalWrite(leds[2],HIGH);  
+        digitalWrite(leds[0],LOW); 
+        digitalWrite(leds[1],HIGH);  
 
     }  
 
@@ -84,34 +84,34 @@ void loop()
      if(Val_luz > 400 && Val_temp > 22 && Val_lluvia <= 780 && digitalRead(automatico)  == HIGH)
     {
         lookAround2();
-        digitalWrite(leds[0],HIGH); 
-        digitalWrite(leds[1],LOW);   
+        digitalWrite(leds[1],HIGH); 
+        digitalWrite(leds[0],LOW);   
     }
 
     
        //Cuando hay mucha luz y temperatura alta, está lloviendo ventana cierra
-     if(Val_luz < 400 && Val_temp > 22 && Val_lluvia <= 780 && digitalRead(automatico)  == HIGH)
+     if(Val_luz <= 400 && Val_temp > 22 && Val_lluvia <= 780 && digitalRead(automatico)  == HIGH)
     {
         lookAround2();
-        digitalWrite(leds[0],LOW); 
-        digitalWrite(leds[1],HIGH);  
+        digitalWrite(leds[1],LOW); 
+        digitalWrite(leds[0],HIGH);  
 
     }  
 
      //Cuando hay mucha luz y temperatura baja, está lloviendo ventana cierra
-     if(Val_luz < 400 && Val_temp < 28 && Val_lluvia <= 780  && digitalRead(automatico)  == HIGH)
+     if(Val_luz <= 400 && Val_temp < 22 && Val_lluvia <= 780  && digitalRead(automatico)  == HIGH)
     {
         lookAround2();
-        digitalWrite(leds[0],LOW); 
-        digitalWrite(leds[1],HIGH);   
+        digitalWrite(leds[1],LOW); 
+        digitalWrite(leds[0],HIGH);   
     }  
 
     //Cuando hay mucha luz y temperatura baja, ventana cierra
-     if(Val_luz < 400 && Val_temp < 22 && Val_luz > 780  && digitalRead(automatico)  == HIGH)
+     if(Val_luz <= 400 && Val_temp < 22 && Val_lluvia > 780 && digitalRead(automatico)  == HIGH)
     {
         lookAround2();
-        digitalWrite(leds[0],LOW); 
-        digitalWrite(leds[1],HIGH);   
+        digitalWrite(leds[1],LOW); 
+        digitalWrite(leds[0],HIGH);   
     }  
 
     //Cuando llega al final de carrera apaga, y enciende solo cuando no hay luz 

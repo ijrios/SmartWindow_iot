@@ -1,4 +1,4 @@
-# SISTEMA DE CONTROL DE VENTANAS AUTOMATIZADO (sensor de lluvia, sensor de temperatura y sensor de luz analógicos). 
+# PROYECTO DE EMPRESARISMO EN DESARROLLO: SISTEMA DE CONTROL DE VENTANAS AUTOMATIZADO (sensor de lluvia, temperatura y luz analógicos) - IOT. 
 
 ## OBJETIVOS 
 
@@ -12,21 +12,30 @@
 
 ## PROBLEMA
 
-• El problema al tener una venta común y corriente es que al momento de no estar en el sitio ya sea casa, oficina, salón de universidad, etc. Cuando llueve o hace mucho sol y salimos del lugar sin percatarnos de si dejamos abierta o cerrada la ventana de nuestra casa, oficina o salón de universidad, tendríamos un problema en el lugar ya que podemos tener cosas al pendiente cerca a la ventana y se puede dañar con la lluvia. El punto es que para evitar esos percances implementaríamos la ventana inteligente, que funciones con sensores de temperatura, luminosidad y humedad para que por medio de estos sensores la ventana se abra y se cierra dependiendo clima de la ciudad, teniando así dos funcionalidades.
+• El problema al tener una venta común y corriente es que al momento de no estar en el sitio ya sea casa, oficina, salón de universidad, etc. Cuando llueve y salimos del lugar sin percatarnos de si dejamos abierta o cerrada la ventana, tendríamos un inconveniente ya que podemos tener cosas al pendiente cerca a la ventana y se pueden dañar con la lluvia, además, si nos encontramos en el sitio esta brindará confort, pues se adapta a las condiciones climaticas del momento mientras esté en el modo automatico.
 
 ## DESCRIPCIÓN TECNOLÓGICA
 
-• Por medio de la información que tomen los sensores, los motores harán mover los engranajes haciendo que la ventana se abra o se cierre dependiendo la situación climática, se podrá controlar la ventana de manera manual.
-Los sensores van a emitir una señal al microcontrolador programado para que este haga que los motores cierren o abran la ventana, todo este sistema alimentado energéticamente por un panel solar.
+• Los sensores van a emitir una señal al microcontrolador programado, dependiendo de la condición (estados) que se cumpla se encenderá el motor que hará que cierre o abra la ventana dependiendo la situación climática, se podrá controlar la ventana de manera manual. Este sistema estará alimentado energéticamente por un panel solar.
 
 ## ESTADOS
 
-• Caso Base: La ventana se cierra cuando está lloviendo o boton manual en estado 1
+• Caso 1: Cuando hay mucha luz y temperatura alta, la ventana abre.
 
-• Caso 1: La ventana se abre con mucha luz (dia)
+• Caso 2: Cuando hay poca luz y temperatura baja, la ventana cierra.
 
-• Caso 2: La ventana se abre con mucha luz (dia) y temperatura alta
+• Caso 3: Cuando hay poca luz y temperatura alta, la ventana abre.
 
-• Caso 3: La ventana se cierra con poca luz (noche) y temperatura baja
+• Caso 4: Cuando hay poca luz y temperatura baja; está lloviendo ventana cierra.
 
-• Caso 4: La ventana se abre con poca luz (noche) y temperatura alta
+• Caso 5: Cuando hay poca luz y temperatura alta; está lloviendo, la ventana cierra.
+
+• Caso 6: Cuando hay mucha luz y temperatura alta; está lloviendo, la ventana cierra.
+
+• Caso 7: Cuando hay mucha luz y temperatura baja; está lloviendo, la ventana cierra.
+
+• Caso 7: Cuando hay mucha luz y temperatura baja, la ventana cierra.
+
+• Caso 8: Modo manual, el usuario controla la ventana desde pulsadores y desde una aplicación móvil.
+
+
