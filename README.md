@@ -1,4 +1,4 @@
-# PROYECTO DE EMPRESARISMO EN DESARROLLO: SISTEMA DE CONTROL DE VENTANAS AUTOMATIZADO (sensor de lluvia, temperatura y luz analógicos) - IOT. 
+# SISTEMA DE CONTROL DE VENTANAS AUTOMATIZADO (sensor de lluvia, temperatura y luz analógicos) - IOT. 
 
 ## OBJETIVOS 
 
@@ -16,7 +16,7 @@
 
 ## DESCRIPCIÓN TECNOLÓGICA
 
-• Los sensores van a emitir una señal al microcontrolador programado, dependiendo de la condición (estados) que se cumpla se encenderá el motor que hará que cierre o abra la ventana dependiendo la situación climática, se podrá controlar la ventana de manera manual. Este sistema estará alimentado energéticamente por un panel solar.
+• Los sensores van a emitir una señal al microcontrolador programado, dependiendo de la condición (estados) que se cumpla se encenderá el motor que hará que cierre o abra la ventana dependiendo la situación climática, se podrá controlar la ventana de manera manual. 
 
 ## ESTADOS
 
