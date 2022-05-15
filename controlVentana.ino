@@ -1,4 +1,10 @@
-int Pins[] = {11,10,9}; //Un pin para PWM, dos pines para la dirección del motor
+#include <SoftwareSerial.h>
+SoftwareSerial Blue(0, 1); // Se asignan los pines para el Bluetooth
+long int data; // Dato enviado desde el dispositivo movil
+long int password1 = 27;// Ventana cierra desde dispositivo movil 
+long int password2 = 21; // Ventana abre desde dispositivo movil 
+long int password3 = 14; // Apagado desde dispositivo movil 
+int Pins[] = {11,10,9}; // Un pin para PWM, dos pines para la dirección del motor
 int switchPin = 6; // Fin de carreraFin de carrera
 int switchPin2 = 7; // Fin de carreraFin de carrera
 int leds[] = {12,13}; // Leds puerta abierta y cerada
@@ -20,7 +26,8 @@ void setup()
   {
     pinMode(leds[h], OUTPUT); //Se asignan leds como salida
   }
-  Serial.begin(9600); //Inicializamos monitor serie para visualizar los valores de LDR. 
+  Serial.begin(9600); //Inicializamos puerto serie Bluetooth.
+  Blue.begin(9600); //Inicializamos monitor serie para visualizar los valores de LDR. 
   pinMode(switchPin, INPUT_PULLUP); //Se asigna boton de fin de carrera como entrada
   pinMode(switchPin2, INPUT_PULLUP); //Se asigna boton de fin de carrera como entrada
   pinMode(abrir_cerrar, INPUT_PULLUP); //Se asigna boton manual para abrir y cerrar como entrada
@@ -42,6 +49,10 @@ void loop()
     Serial.print("Sensor de Lluvia: ");
     Serial.println(Val_lluvia); //Imprimimos dicho valor, comprendido entre 0 y 1023.
     delay(500);
+    if(Blue.available()>0) 
+     {
+       data = Blue.parseInt();
+     }
 
      // ---------------------------   MODO AUTOMATICO ----------------------------
      
