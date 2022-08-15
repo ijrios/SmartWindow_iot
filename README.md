@@ -1,4 +1,4 @@
-# SISTEMA DE CONTROL DE VENTANAS AUTOMATIZADO (sensor de lluvia, temperatura y luz analógicos) - IOT. 
+# Sistema IoT Retrofit de control domotizado para ventanas deslizantes (sensor de lluvia, temperatura y luz analógicos). 
 
 ## OBJETIVOS 
 
