@@ -32,14 +32,14 @@ MODO AUTOMÁTICO
 Los siguientes algoritmos fueron diseñados e integrados al software para el control de la ventana inteligente:
 
 Algoritmo de la rutina 1
-
+```
     if(Val_luz <= 400 && Val_temp > 22 && Val_lluvia > 780  && digitalRead(automatico)  == HIGH)
     {
         lookAround();
         digitalWrite(leds[0],LOW); 
         digitalWrite(leds[1],HIGH);  
     }  
-
+```
 En el algoritmo de la rutina 1, los datos obtenidos de los sensores de iluminación, temperatura y lluvia se correlacionan para gestionar la apertura de la ventana de la siguiente forma. 
 
 - Sensor de iluminación (Estado: Iluminación Alta); 
@@ -50,14 +50,14 @@ En el algoritmo de la rutina 1, los datos obtenidos de los sensores de iluminaci
 Nota 1: Cuando la ventana llega hasta el final de su desplazamiento, un sensor de fin carrera ubicado en dicha posición es accionado. Esto conlleva a enviar una señal al computador de placa reducida, que, a su vez, es procesada por el software para detener el motor que genera el desplazamiento lateral.
 
 Algoritmo de la rutina 2
-
+```
    if(Val_luz <= 400 && Val_temp < 15 && Val_lluvia > 780 && digitalRead(automatico)  == HIGH)
     {
         lookAround2();
         digitalWrite(leds[1],LOW); 
         digitalWrite(leds[0],HIGH);   
     }
-
+```
 En el algoritmo de la rutina 2, los datos obtenidos de los sensores de iluminación, temperatura y lluvia se correlacionan para gestionar el cerrado de la ventana de la siguiente forma. 
 
 - Sensor de iluminación (Estado: Iluminación Alta); 
@@ -68,14 +68,14 @@ En el algoritmo de la rutina 2, los datos obtenidos de los sensores de iluminaci
 Nota: Se aplica lo descrito en la Nota 1
 
 Algoritmo de la rutina 3
-
+```
 if(Val_luz > 400 && Val_temp > 22 && Val_lluvia > 780  && digitalRead(automatico)  == HIGH)
     {
         lookAround();
         digitalWrite(leds[0],HIGH); 
         digitalWrite(leds[1],LOW);   
     }
-
+```
 En el algoritmo de la rutina 3, los datos obtenidos de los sensores de iluminación, temperatura y lluvia se correlacionan para gestionar la apertura de la ventana de la siguiente forma. 
 
 - Sensor de iluminación (Estado: Iluminación Baja); 
@@ -86,14 +86,14 @@ En el algoritmo de la rutina 3, los datos obtenidos de los sensores de iluminaci
 Nota: Se aplica lo descrito en la Nota 1
 
 Algoritmo de la rutina 4
-
+```
 if(Val_luz > 400 && Val_temp < 15 && Val_lluvia > 780 && digitalRead(automatico)  == HIGH)
     {
         lookAround2();
         digitalWrite(leds[1],HIGH); 
         digitalWrite(leds[0],LOW);   
     }
-
+```
 En el algoritmo de la rutina 4, los datos obtenidos de los sensores de iluminación, temperatura y lluvia se correlacionan para gestionar el cerrado de la ventana de la siguiente forma. 
 
 - Sensor de iluminación (Estado: Iluminación Baja); 
@@ -104,14 +104,14 @@ En el algoritmo de la rutina 4, los datos obtenidos de los sensores de iluminaci
 Nota: Se aplica lo descrito en la Nota 1
 
 Algoritmo de la rutina 5
-
+```
 if(Val_luz > 400 && Val_temp > 22 && Val_lluvia <= 780 && digitalRead(automatico)  == HIGH)
     {
         lookAround2();
         digitalWrite(leds[1],HIGH); 
         digitalWrite(leds[0],LOW);   
     }
-
+```
 En el algoritmo de la rutina 5, los datos obtenidos de los sensores de iluminación, temperatura y lluvia se correlacionan para gestionar el cerrado de la ventana de la siguiente forma. 
 
 - Sensor de iluminación (Estado: Iluminación Baja); 
@@ -122,14 +122,14 @@ En el algoritmo de la rutina 5, los datos obtenidos de los sensores de iluminaci
 Nota: Se aplica lo descrito en la Nota 1
 
 Algoritmo de la rutina 6
-
+```
 if(Val_luz <= 400 && Val_temp > 22 && Val_lluvia <= 780 && digitalRead(automatico)  == HIGH)
     {
         lookAround2();
         digitalWrite(leds[1],LOW); 
         digitalWrite(leds[0],HIGH);  
     }  
-
+```
 En el algoritmo de la rutina 6, los datos obtenidos de los sensores de iluminación, temperatura y lluvia se correlacionan para gestionar el cerrado de la ventana de la siguiente forma. 
 
 - Sensor de iluminación (Estado: Iluminación Alta); 
@@ -140,14 +140,14 @@ En el algoritmo de la rutina 6, los datos obtenidos de los sensores de iluminaci
 Nota: Se aplica lo descrito en la Nota 1
 
 Algoritmo de la rutina 7
-
+```
 if(Val_luz <= 400 && Val_temp < 15 && Val_lluvia <= 780  && digitalRead(automatico)  == HIGH)
     {
         lookAround2();
         digitalWrite(leds[1],LOW); 
         digitalWrite(leds[0],HIGH);   
     }  
-
+```
 En el algoritmo de la rutina 7, los datos obtenidos de los sensores de iluminación, temperatura y lluvia se correlacionan para gestionar el cerrado de la ventana de la siguiente forma. 
 
 - Sensor de iluminación (Estado: Iluminación Alta); 
