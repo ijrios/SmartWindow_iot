@@ -1,4 +1,4 @@
-# Sistema IoT Retrofit de control domotizado para ventanas deslizantes (sensor de lluvia, temperatura y luz analógicos). 
+# Sistema IoT Retrofit de control domotizado para ventanas deslizantes (sensor de lluvia, temperatura y luz analógicos) - Arduino y microPython. 
 
 ## OBJETIVOS 
 
@@ -26,6 +26,12 @@ Los sensores que controlan los motores que permiten la apertura y el cerrado de 
 •	Sensor de iluminación
 
 A continuación, se presenta una descripción de la secuencia de operación del software en modo automático y en modo manual.
+
+# microPython SP32
+
+• Descripción en proceso...
+
+# Arduino
 
 MODO AUTOMÁTICO
 
