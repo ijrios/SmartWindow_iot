@@ -29,7 +29,330 @@ A continuación, se presenta una descripción de la secuencia de operación del 
 
 # microPython SP32
 
-• Descripción en proceso...
+
+Los siguientes algoritmos fueron diseñados e integrados al software para el control de la ventana inteligente:
+
+Algoritmo de la lectura de sensore:
+```
+  def legere_sensor_temperatus():
+    global sensorem_pretium_temp
+    sensorem_pretium_temp = dht.DHT11(pin_temperatus)
+    while True:
+        try:
+            sensorem_pretium_temp.measure()
+            temperatus = sensorem_pretium_temp.temperature()
+            humiditas = sensorem_pretium_temp.humidity()
+            print("[INFO] Sensor temp: {}°C".format(sensorem_pretium_temp))
+            print("[INFO] Sensor temp: {}%".format(humiditas))
+        except OSError as e:
+            print("Error al leer el sensor DHT11:", e)
+        time.sleep(1)
+        
+def legere_sensorem_lux():
+    # Leer el valor analógico de la luz
+    global sensorem_pretium_lux
+    while True:
+        sensorem_pretium_lux = pin_lux.read()
+        print("[INFO] Sensor light: {}".format(sensorem_pretium_lux))
+        time.sleep(1)
+        
+def legere_sensorem_pluvia():
+    global sensorem_pretium_pluvia
+    while True:
+        sensorem_pretium_pluvia = pin_pluvia.value()
+        print("[INFO] Sensor light: {}".format(sensorem_pretium_pluvia))
+        time.sleep(1)
+```
+
+```
+#Configuramus stamina ad valores e datorum accipiendos (main)
+    _thread.start_new_thread(legere_sensorem_lux,())
+    _thread.start_new_thread(legere_sensorem_temperatus,())
+    _thread.start_new_thread(legere_sensorem_pluvia,())
+
+```
+
+Algoritmo de la lectura de las interrupciones:
+
+```
+  def edge_detected_rigth(pin_1):
+    #Fin de carrera apagado
+    print("Apagado fin 1")
+    apagado()
+    #look_around()
+
+def edge_detected_left(pin_2):
+    #Fin de carrera apagado
+    print("Apagado fin 2")
+    apagado()
+    #look_around2()
+```
+
+```
+ #Configuramus interpellationes (main)
+    pin_1.irq(handler = edge_detected_rigth, trigger = Pin.IRQ_FALLING)
+    pin_2.irq(handler = edge_detected_left, trigger = Pin.IRQ_FALLING)
+    pin_3.irq(handler = left, trigger = Pin.IRQ_FALLING)
+    pin_4.irq(handler = rigth, trigger = Pin.IRQ_FALLING)
+    pin_5.irq(handler = down, trigger = Pin.IRQ_FALLING)
+
+```
+
+Algoritmo de la lectura de la base de datos MYSQL:
+
+```
+   def database_connect():
+    
+    #MYSQL DATABASE - General Occasus
+    #Optiones ad database nexu
+    hostname = '127.0.0.1'
+    username = 'pi'
+    password = 'raspberry'
+    database = 'pidata'
+
+def scribe_MYSQL(identification,timestamp,level,rain):
+    
+    print("Scribere database")
+    query = "INSERT INTO controlVentana (identification,timestamp,temp,lux,pluvia) " \
+                "VALUES (%s,%s,%s,%s)"
+    args = (identification,timestamp,temp,lux,pluvia)
+
+    try:
+        conn = MySQLdb.connect( host=hostname, user=username, passwd=password, db=database )
+        cursor = conn.cursor()
+        cursor.execute(query, args)
+        conn.commit()
+
+    except Exception as error:
+        print(error)
+
+    finally:
+        cursor.close()
+        conn.close()
+        
+def legere_MYSQL():
+
+    try:
+        
+        conn = MySQLdb.connect(host=hostname, user=username, passwd=password, db=database )
+        cursor = conn.cursor()
+        query = ("SELECT * FROM controlVentana ")
+        cursor.execute(query)
+        rows = cursor.fetchall()
+        
+        print('Total Row(s):', cursor.rowcount)
+        numerare = []
+        for row in rows:
+           numerare.append(row[0])
+
+    except ValueError as e:
+        print(e)
+
+    finally:
+        cursor.close()
+        conn.close()
+
+    return numerare 
+```
+
+Algoritmo de la lectura de la conexión a Wi-Fi:
+
+```
+#CONNECT WI-FI 
+def wifi_connect():
+    print("[INFO] Connectens", end="")
+    sta_if = network.WLAN(network.STA_IF)
+    sta_if.active(True)
+    try:
+        sta_if.connect('MARIO S10', 'unodos12')
+    except:
+        machine.reset()
+```
+
+Algoritmo de la lectura del MQTT:
+
+```
+ 
+
+#MQTT configuratione
+MQTT_BROKER    = "broker.hivemq.com"
+MQTT_USER      = ""
+MQTT_PASSWORD  = ""
+MQTT_CLIENT_ID = "clientId-YWyGsNoiWf"
+MQTT_TOPIC     = "udemedellin/sinistram"
+MQTT_TOPIC_2   = "udemedellin/declinemus"
+MQTT_TOPIC_3   = "udemedellin/pretium"
+MQTT_TOPIC_4   = "udemedellin/dexteram"
+MQTT_PORT = 1883
+
+    while not sta_if.isconnected():
+        print(".", end="")
+        time.sleep(0.3)
+    
+    print(" [INFO] Wi-FI connexa!")
+
+#DUXERIT NUNTIUM CONFIG
+def message_arrived(topic, msg):
+    print("[INFO] {}{}".format(topic,msg))
+    if (topic == b'udemedellin/dexteram'):
+        if (msg == b'1'):
+            print("[INFO] ad dextram")
+            value="ad dextram"
+            look_around()
+            client.publish(b"udemedellin/pretium",value)
+    if (topic == b'udemedellin/sinistram'):
+        if (msg == b'1'):
+            value="ad sinistram"
+            look_around2()
+            print("[INFO] ad sinistram")
+            client.publish(b"udemedellin/pretium",value)
+    if (topic == b'udemedellin/declinemus'):
+        if (msg == b'1'):
+            print("[INFO] ut declinemus")
+            value="ut declinemus"
+            apagado()
+            client.publish(b"udemedellin/pretium",value)
+
+#PECUNIAM DO
+def subscribe():
+    client = MQTTClient(MQTT_CLIENT_ID, MQTT_BROKER, port=MQTT_PORT, user=MQTT_USER, password=MQTT_PASSWORD, keepalive=60)
+    # Subscribed messages will be delivered to this callback
+    client.set_callback(message_arrived)
+    isconnected = False
+    while not isconnected:
+        try:
+            client.connect()
+            isconnected = True
+        except Exception as e:
+            print("[ERROR] {}".format(e))
+            time.sleep(1)
+    client.subscribe(MQTT_TOPIC)
+    client.subscribe(MQTT_TOPIC_2)
+    client.subscribe(MQTT_TOPIC_3)
+    client.subscribe(MQTT_TOPIC_4)
+    print("Connected on %s, topic subscribed: %s " % (MQTT_BROKER, MQTT_TOPIC))
+    print("Connected on %s, topic subscribed: %s " % (MQTT_BROKER, MQTT_TOPIC_2))
+    print("Connected on %s, topic subscribed: %s " % (MQTT_BROKER, MQTT_TOPIC_3))
+    print("Connected on %s, topic subscribed: %s " % (MQTT_BROKER, MQTT_TOPIC_4))
+    return client
+```
+
+Algoritmo de la rutina 1
+```
+   if (sensorem_pretium_pluvia == 0 and legere_sensorem_temperatus > 25 and legere_sensorem_lux <= 400):
+            look_around2()
+            print("Ventana abre")
+```
+En el algoritmo de la rutina 1, los datos obtenidos de los sensores de iluminación, temperatura y lluvia se correlacionan para gestionar la apertura de la ventana de la siguiente forma. 
+
+- Sensor de iluminación (Estado: Iluminación Alta); 
+- Sensor de temperatura (Estado: Temperatura: alta >22°C);  
+- Sensor de lluvia (Estado: con lluvia)
+- Rutina de operación: Abrir ventana
+
+Nota 1: Cuando la ventana llega hasta el final de su desplazamiento, un sensor de fin carrera ubicado en dicha posición es accionado. Esto conlleva a enviar una señal al computador de placa reducida, que, a su vez, es procesada por el software para detener el motor que genera el desplazamiento lateral.
+
+Algoritmo de la rutina 2
+```
+if (sensorem_pretium_pluvia == 1 and legere_sensorem_temperatus < 18 and legere_sensorem_lux > 400):
+            look_around()
+            print("Ventana cierra")
+```
+En el algoritmo de la rutina 2, los datos obtenidos de los sensores de iluminación, temperatura y lluvia se correlacionan para gestionar el cerrado de la ventana de la siguiente forma. 
+
+- Sensor de iluminación (Estado: Iluminación Baja); 
+- Sensor de temperatura (Estado: Temperatura: Baja <18°C);  
+- Sensor de lluvia (Estado: Con lluvia)
+- Rutina de operación: Cerrar ventana
+
+Nota: Se aplica lo descrito en la Nota 1
+
+Algoritmo de la rutina 3
+```
+if (sensorem_pretium_pluvia == 0 and legere_sensorem_temperatus < 18 and legere_sensorem_lux > 400):
+            look_around()
+            print("Ventana cierra")
+```
+En el algoritmo de la rutina 3, los datos obtenidos de los sensores de iluminación, temperatura y lluvia se correlacionan para gestionar la apertura de la ventana de la siguiente forma. 
+
+- Sensor de iluminación (Estado: Iluminación Baja); 
+- Sensor de temperatura (Estado: Temperatura: Baja <18°C);  
+- Sensor de lluvia (Estado: Sin lluvia)
+- Rutina de operación: Cerrar ventana
+
+Nota: Se aplica lo descrito en la Nota 1
+
+Algoritmo de la rutina 4
+```
+if (sensorem_pretium_pluvia == 0 and legere_sensorem_temperatus > 22 and legere_sensorem_lux > 400):
+            look_around2()
+            print("Ventana abre")
+```
+En el algoritmo de la rutina 4, los datos obtenidos de los sensores de iluminación, temperatura y lluvia se correlacionan para gestionar el cerrado de la ventana de la siguiente forma. 
+
+- Sensor de iluminación (Estado: Iluminación Baja); 
+- Sensor de temperatura (Estado: Temperatura: Alta >22°C);  
+- Sensor de lluvia (Estado: Sin lluvia)
+- Rutina de operación: Abrir ventana
+
+Nota: Se aplica lo descrito en la Nota 1
+
+Algoritmo de la rutina 5
+```
+if (sensorem_pretium_pluvia == 1 and legere_sensorem_temperatus > 22 and legere_sensorem_lux > 400):
+            look_around()
+            print("Ventana cierra")
+```
+En el algoritmo de la rutina 5, los datos obtenidos de los sensores de iluminación, temperatura y lluvia se correlacionan para gestionar el cerrado de la ventana de la siguiente forma. 
+
+- Sensor de iluminación (Estado: Iluminación Baja); 
+- Sensor de temperatura (Estado: Temperatura: Alta >22°C);  
+- Sensor de lluvia (Estado: Con lluvia)
+- Rutina de operación: Cerrar ventana
+
+Nota: Se aplica lo descrito en la Nota 1
+
+Algoritmo de la rutina 6
+```
+if (sensorem_pretium_pluvia == 1 and legere_sensorem_temperatus > 22 and legere_sensorem_lux <= 400):
+            look_around()
+            print("Ventana cierra") 
+```
+En el algoritmo de la rutina 6, los datos obtenidos de los sensores de iluminación, temperatura y lluvia se correlacionan para gestionar el cerrado de la ventana de la siguiente forma. 
+
+- Sensor de iluminación (Estado: Iluminación Alta); 
+- Sensor de temperatura (Estado: Temperatura: Alta >22°C);  
+- Sensor de lluvia (Estado: Con lluvia)
+- Rutina de operación: Cerrar ventana
+
+Nota: Se aplica lo descrito en la Nota 1
+
+Algoritmo de la rutina 7
+```
+if (sensorem_pretium_pluvia == 1 and legere_sensorem_temperatus < 18 and legere_sensorem_lux <= 400):
+            look_around()
+            print("Ventana cierra")
+```
+En el algoritmo de la rutina 7, los datos obtenidos de los sensores de iluminación, temperatura y lluvia se correlacionan para gestionar el cerrado de la ventana de la siguiente forma. 
+
+- Sensor de iluminación (Estado: Iluminación Alta); 
+- Sensor de temperatura (Estado: Temperatura: Baja <18°C);  
+- Sensor de lluvia (Estado: Con lluvia)
+- Rutina de operación: Cerrar ventana
+
+Algoritmo de la rutina 8
+
+```
+if (sensorem_pretium_pluvia == 1 and legere_sensorem_temperatus < 18 and legere_sensorem_lux <= 400):
+            look_around()
+            print("Ventana cierra")
+```
+En el algoritmo de la rutina 7, los datos obtenidos de los sensores de iluminación, temperatura y lluvia se correlacionan para gestionar el cerrado de la ventana de la siguiente forma. 
+
+- Sensor de iluminación (Estado: Iluminación Alta); 
+- Sensor de temperatura (Estado: Temperatura: Baja <18°C);  
+- Sensor de lluvia (Estado: Con lluvia)
+- Rutina de operación: Cerrar ventana
 
 # Arduino
 
