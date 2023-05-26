@@ -41,7 +41,7 @@ void loop()
     int Val_luz = analogRead(SensorPin_luz); //Se lee el valor del sensor de luz
     int Val_temp = analogRead(SensorPin_temp); //Se lee el valor del sensor de temperatura
     int Val_lluvia = analogRead(SensorPin_lluvia); //Se lee el valor del sensor de lluvia
-    Val_temp = (5.0 * Val_temp * 100.0)/1024.0; //Convertimos valor del sensor a temperatura en grados
+    Val_temp = (5.0*Val_temp*100.0)/1024.0; //Convertimos valor del sensor a temperatura en grados
     Serial.print("Sensor de luz: "); 
     Serial.println(Val_luz); //Imprimimos dicho valor, comprendido entre 0 y 1023. 
     Serial.print("Sensor de Temperatura en grados: ");
