@@ -21,8 +21,11 @@
 Los sensores que controlan los motores que permiten la apertura y el cerrado de la ventana, y, que, a su vez, son controlados por el software con:
 
 •	Sensor de temperatura
+
 •	Sensor de lluvia
+
 •	Sensor de fin de carrera
+
 •	Sensor de iluminación
 
 A continuación, se presenta una descripción de la secuencia de operación del software en modo automático y en modo manual.
@@ -32,9 +35,11 @@ A continuación, se presenta una descripción de la secuencia de operación del 
 
 Los siguientes algoritmos fueron diseñados e integrados al software para el control de la ventana inteligente:
 
-Algoritmo de la lectura de sensore:
+Algoritmo de la lectura de sensorem:
 ```
-  def legere_sensor_temperatus():
+  
+def legere_sensorem_temperatus(topic, msg):
+    print("[INFO] {}{}".format(topic,msg))
     global sensorem_pretium_temp
     sensorem_pretium_temp = dht.DHT11(pin_temperatus)
     while True:
@@ -44,23 +49,28 @@ Algoritmo de la lectura de sensore:
             humiditas = sensorem_pretium_temp.humidity()
             print("[INFO] Sensor temp: {}°C".format(sensorem_pretium_temp))
             print("[INFO] Sensor temp: {}%".format(humiditas))
+            client.publish(b"udemedellin/temp",sensorem_pretium_temp)
         except OSError as e:
             print("Error al leer el sensor DHT11:", e)
         time.sleep(1)
         
-def legere_sensorem_lux():
+def legere_sensorem_lux(topic, msg):
+    print("[INFO] {}{}".format(topic,msg))
     # Leer el valor analógico de la luz
     global sensorem_pretium_lux
     while True:
         sensorem_pretium_lux = pin_lux.read()
         print("[INFO] Sensor light: {}".format(sensorem_pretium_lux))
+        client.publish(b"udemedellin/lux",sensorem_pretium_lux)
         time.sleep(1)
         
-def legere_sensorem_pluvia():
+def legere_sensorem_pluvia(topic, msg):
+    print("[INFO] {}{}".format(topic,msg))
     global sensorem_pretium_pluvia
     while True:
         sensorem_pretium_pluvia = pin_pluvia.value()
         print("[INFO] Sensor light: {}".format(sensorem_pretium_pluvia))
+        client.publish(b"udemedellin/pluvia",sensorem_pretium_pluvia)
         time.sleep(1)
 ```
 
@@ -183,6 +193,9 @@ MQTT_TOPIC     = "udemedellin/sinistram"
 MQTT_TOPIC_2   = "udemedellin/declinemus"
 MQTT_TOPIC_3   = "udemedellin/pretium"
 MQTT_TOPIC_4   = "udemedellin/dexteram"
+MQTT_TOPIC_5   = "udemedellin/pluvia"
+MQTT_TOPIC_6   = "udemedellin/temp"
+MQTT_TOPIC_7   = "udemedellin/lux"
 MQTT_PORT = 1883
 
     while not sta_if.isconnected():
@@ -213,6 +226,7 @@ def message_arrived(topic, msg):
             apagado()
             client.publish(b"udemedellin/pretium",value)
 
+
 #PECUNIAM DO
 def subscribe():
     client = MQTTClient(MQTT_CLIENT_ID, MQTT_BROKER, port=MQTT_PORT, user=MQTT_USER, password=MQTT_PASSWORD, keepalive=60)
@@ -230,11 +244,18 @@ def subscribe():
     client.subscribe(MQTT_TOPIC_2)
     client.subscribe(MQTT_TOPIC_3)
     client.subscribe(MQTT_TOPIC_4)
+    client.subscribe(MQTT_TOPIC_5)
+    client.subscribe(MQTT_TOPIC_6)
+    client.subscribe(MQTT_TOPIC_7)
     print("Connected on %s, topic subscribed: %s " % (MQTT_BROKER, MQTT_TOPIC))
     print("Connected on %s, topic subscribed: %s " % (MQTT_BROKER, MQTT_TOPIC_2))
     print("Connected on %s, topic subscribed: %s " % (MQTT_BROKER, MQTT_TOPIC_3))
     print("Connected on %s, topic subscribed: %s " % (MQTT_BROKER, MQTT_TOPIC_4))
+    print("Connected on %s, topic subscribed: %s " % (MQTT_BROKER, MQTT_TOPIC_5))
+    print("Connected on %s, topic subscribed: %s " % (MQTT_BROKER, MQTT_TOPIC_6))
+    print("Connected on %s, topic subscribed: %s " % (MQTT_BROKER, MQTT_TOPIC_7))
     return client
+
 ```
 
 Algoritmo de la rutina 1
